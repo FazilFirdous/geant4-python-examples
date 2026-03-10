@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D1386C">
+    <title>Cora — Restaurant Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="/restaurant/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div style="text-align:center;color:white;">
+                <div style="font-size:60px;">🍽️</div>
+                <h1 style="font-family:'Playfair Display',serif;font-size:36px;margin-top:12px;">Cora</h1>
+                <p style="opacity:0.8;margin-top:4px;">Restaurant Dashboard</p>
+            </div>
+            <div class="loading-spinner"></div>
+        </div>
+
+        <!-- Auth Screen -->
+        <div id="auth-screen" style="display:none;">
+            <div class="header-gradient" style="padding:60px 24px 50px;text-align:center;position:relative;overflow:hidden;">
+                <div class="header-circles"></div>
+                <div style="font-size:52px;">🍽️</div>
+                <h1 style="font-family:'Playfair Display',serif;font-size:32px;color:white;margin-top:8px;">Restaurant Login</h1>
+                <p style="color:rgba(255,255,255,0.8);font-size:14px;">Cora Restaurant Dashboard</p>
+            </div>
+            <div style="padding:32px 24px;background:var(--berry-light);">
+                <div id="phone-step">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px;">Welcome Back!</h2>
+                    <p style="color:var(--text-sub);font-size:14px;margin-bottom:24px;">Enter your registered phone number</p>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="phone-input-wrap">
+                            <span class="country-prefix">🇮🇳 +91</span>
+                            <input type="tel" id="phone-input" placeholder="98765 43210" maxlength="10" inputmode="numeric">
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="width:100%;" id="send-otp-btn" onclick="Auth.sendOTP()">Send OTP</button>
+                    <div id="recaptcha-container"></div>
+                </div>
+                <div id="otp-step" style="display:none;">
+                    <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px;">Verify OTP</h2>
+                    <p style="color:var(--text-sub);font-size:14px;margin-bottom:24px;" id="otp-hint"></p>
+                    <div class="form-group">
+                        <label>6-Digit OTP</label>
+                        <input type="number" id="otp-input" placeholder="••••••" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:10px;font-weight:700;">
+                    </div>
+                    <button class="btn-primary" style="width:100%;" id="verify-btn" onclick="Auth.verifyOTP()">Verify & Login</button>
+                    <button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="Auth.reset()">← Change Number</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="main-app" style="display:none;">
+            <!-- Header -->
+            <div class="header-gradient" id="dashboard-header">
+                <div class="header-circles"></div>
+                <div style="position:relative;z-index:1;padding:50px 20px 0;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div>
+                            <h1 id="restaurant-name-header" style="font-family:'Playfair Display',serif;font-size:22px;color:white;font-weight:700;">Loading...</h1>
+                            <p id="restaurant-status-text" style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:2px;"></p>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div id="open-toggle-btn" onclick="Dashboard.toggleOpen()" style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:10px;padding:8px 12px;cursor:pointer;color:white;font-size:13px;font-weight:600;">
+                                <span id="open-toggle-icon">🟢</span>
+                                <span id="open-toggle-text">Open</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav" id="tab-nav">
+                <div class="tab-item active" data-tab="orders" onclick="Dashboard.switchTab('orders')">
+                    <span class="tab-icon">📋</span>
+                    <span>Orders</span>
+                    <span id="orders-badge" class="tab-badge" style="display:none;"></span>
+                </div>
+                <div class="tab-item" data-tab="menu" onclick="Dashboard.switchTab('menu')">
+                    <span class="tab-icon">🍽️</span>
+                    <span>Menu</span>
+                </div>
+                <div class="tab-item" data-tab="deliveries" onclick="Dashboard.switchTab('deliveries')">
+                    <span class="tab-icon">🛵</span>
+                    <span>Deliveries</span>
+                </div>
+                <div class="tab-item" data-tab="earnings" onclick="Dashboard.switchTab('earnings')">
+                    <span class="tab-icon">💰</span>
+                    <span>Earnings</span>
+                </div>
+                <div class="tab-item" data-tab="settings" onclick="Dashboard.switchTab('settings')">
+                    <span class="tab-icon">⚙️</span>
+                    <span>Settings</span>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tab-content" style="overflow-y:auto;height:calc(100vh - 180px);"></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Audio for new order alert -->
+    <div id="audio-context" style="display:none;"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="/restaurant/js/api.js"></script>
+    <script src="/restaurant/js/orders.js"></script>
+    <script src="/restaurant/js/menu.js"></script>
+    <script src="/restaurant/js/deliveries.js"></script>
+    <script src="/restaurant/js/earnings.js"></script>
+    <script src="/restaurant/js/settings.js"></script>
+    <script src="/restaurant/js/app.js"></script>
+</body>
+</html>

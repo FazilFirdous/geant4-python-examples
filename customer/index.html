@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#D1386C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Cora">
+    <title>Cora — Kulgam's Food, Delivered</title>
+    <link rel="manifest" href="/customer/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="/customer/css/app.css">
+</head>
+<body>
+    <!-- App Shell -->
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-logo">
+                <div class="logo-icon">🍽️</div>
+                <h1>Cora</h1>
+                <p>Kulgam's Food, Delivered</p>
+            </div>
+            <div class="loading-spinner"></div>
+        </div>
+
+        <!-- Auth Screen (Phone OTP) -->
+        <div id="auth-screen" class="screen" style="display:none;">
+            <div class="auth-header">
+                <div class="auth-circles"></div>
+                <div class="auth-logo">
+                    <span class="auth-emoji">🍽️</span>
+                    <h1>Cora</h1>
+                    <p>Kulgam's Food, Delivered</p>
+                </div>
+            </div>
+            <div class="auth-body">
+                <div id="auth-phone-step">
+                    <h2>Welcome! 👋</h2>
+                    <p class="text-sub">Enter your phone number to get started</p>
+                    <div class="input-group" style="margin-top:24px;">
+                        <label>Phone Number</label>
+                        <div class="phone-input">
+                            <span class="country-code">🇮🇳 +91</span>
+                            <input type="tel" id="phone-input" placeholder="98765 43210" maxlength="10" inputmode="numeric">
+                        </div>
+                    </div>
+                    <button id="send-otp-btn" class="btn-primary" style="margin-top:20px;width:100%;">
+                        Send OTP
+                    </button>
+                    <div id="recaptcha-container"></div>
+                </div>
+                <div id="auth-otp-step" style="display:none;">
+                    <h2>Verify OTP 🔐</h2>
+                    <p class="text-sub" id="otp-sent-to"></p>
+                    <div class="input-group" style="margin-top:24px;">
+                        <label>Enter 6-digit OTP</label>
+                        <input type="number" id="otp-input" placeholder="••••••" maxlength="6" inputmode="numeric" class="otp-input">
+                    </div>
+                    <button id="verify-otp-btn" class="btn-primary" style="margin-top:20px;width:100%;">
+                        Verify & Login
+                    </button>
+                    <button id="resend-otp-btn" class="btn-secondary" style="margin-top:10px;width:100%;">
+                        Resend OTP
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App (shown after auth) -->
+        <div id="main-app" style="display:none;">
+            <!-- Offline Banner -->
+            <div id="offline-banner" class="offline-banner" style="display:none;">
+                📡 You're offline. Showing cached data.
+            </div>
+
+            <!-- Screen Container -->
+            <div id="screen-container"></div>
+
+            <!-- Bottom Navigation -->
+            <nav id="bottom-nav" class="bottom-nav">
+                <a href="#home" class="nav-item active" data-screen="home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Home</span>
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#search" class="nav-item" data-screen="search">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">Search</span>
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#orders" class="nav-item" data-screen="orders">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Orders</span>
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#support" class="nav-item" data-screen="support">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">Help</span>
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#profile" class="nav-item" data-screen="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-label">Profile</span>
+                    <span class="nav-dot"></span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="/customer/js/api.js"></script>
+    <script src="/customer/js/components/loading.js"></script>
+    <script src="/customer/js/components/promo-carousel.js"></script>
+    <script src="/customer/js/components/restaurant-card.js"></script>
+    <script src="/customer/js/components/menu-item.js"></script>
+    <script src="/customer/js/components/cart-bar.js"></script>
+    <script src="/customer/js/components/navbar.js"></script>
+    <script src="/customer/js/screens/home.js"></script>
+    <script src="/customer/js/screens/restaurant.js"></script>
+    <script src="/customer/js/screens/cart.js"></script>
+    <script src="/customer/js/screens/tracking.js"></script>
+    <script src="/customer/js/screens/orders.js"></script>
+    <script src="/customer/js/screens/support.js"></script>
+    <script src="/customer/js/screens/profile.js"></script>
+    <script src="/customer/js/screens/search.js"></script>
+    <script src="/customer/js/app.js"></script>
+
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/customer/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
