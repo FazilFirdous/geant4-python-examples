@@ -211,25 +211,71 @@ const OrdersTab = {
         this.updateStatus(orderId, 'cancelled', reason);
     },
 
-    showDeliveryOptions(orderId) {
+    async showDeliveryOptions(orderId) {
+        // Check own available delivery boys first — per spec, own riders take priority
+        let availBoys = [];
+        try {
+            const res = await RApi.getDeliveryBoys();
+            availBoys = (res?.data || []).filter(b => b.is_available && b.is_active);
+        } catch(e) {}
+
+        const mid = `del-modal-${orderId}`;
         const modal = document.createElement('div');
+        modal.id = mid;
         modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;';
+
+        const ownBoysHtml = availBoys.length ? `
+            <div style="margin-bottom:12px;">
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
+                    ✅ Your Available Riders
+                </div>
+                ${availBoys.map(b => `
+                    <button class="btn-success" style="width:100%;margin-bottom:6px;padding:12px;text-align:left;display:flex;align-items:center;gap:10px;"
+                        onclick="OrdersTab.assignDeliveryBoy(${orderId},${b.id},'${b.name.replace(/'/g,"\\'")}');document.getElementById('${mid}').remove()">
+                        🛵 ${b.name}
+                    </button>`).join('')}
+            </div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
+                No Rider Available?
+            </div>` : '';
+
         modal.innerHTML = `
-            <div style="background:white;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:24px;padding-bottom:40px;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;">Delivery Options</h3>
-                <button class="btn-primary" style="width:100%;margin-bottom:10px;padding:14px;" onclick="OrdersTab.postToPublicPool(${orderId});this.closest('[style]').remove()">
+            <div style="background:white;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:24px;padding-bottom:40px;max-height:80vh;overflow-y:auto;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;">🛵 Delivery Options</h3>
+                ${ownBoysHtml}
+                <button class="btn-primary" style="width:100%;margin-bottom:10px;padding:14px;"
+                    onclick="OrdersTab.postToPublicPool(${orderId});document.getElementById('${mid}').remove()">
                     🌐 Post to Public Pool
                 </button>
-                <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;" onclick="OrdersTab.notifyCustomerPickup(${orderId});this.closest('[style]').remove()">
+                <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;"
+                    onclick="OrdersTab.notifyCustomerPickup(${orderId});document.getElementById('${mid}').remove()">
                     🏃 Ask Customer to Pickup
                 </button>
-                <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;" onclick="OrdersTab.notifyDelay(${orderId});this.closest('[style]').remove()">
+                <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;"
+                    onclick="OrdersTab.notifyDelay(${orderId});document.getElementById('${mid}').remove()">
                     ⏰ Delay & Notify Customer
                 </button>
-                <button onclick="this.closest('[style]').remove()" style="width:100%;background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:10px;">Cancel</button>
+                <button onclick="document.getElementById('${mid}').remove()"
+                    style="width:100%;background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:10px;">
+                    Cancel
+                </button>
             </div>
         `;
         document.body.appendChild(modal);
+    },
+
+    async assignDeliveryBoy(orderId, boyId, boyName) {
+        try {
+            const res = await RApi.updateOrderStatus({ order_id: orderId, status: 'picked_up', delivery_boy_id: boyId });
+            if (res?.success) {
+                Dashboard.showToast(`${boyName} assigned!`, 'success');
+                await this.loadOrders('');
+            } else {
+                throw new Error(res?.message);
+            }
+        } catch(e) {
+            Dashboard.showToast(e.message || 'Failed to assign rider', 'error');
+        }
     },
 
     async postToPublicPool(orderId) {

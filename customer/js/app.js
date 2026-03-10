@@ -117,7 +117,8 @@ const App = {
     // ── Cart Management ───────────────────────
     addToCart(item, restaurantId, restaurantName) {
         if (App.cart.length > 0 && App.cart[0].restaurantId !== restaurantId) {
-            if (!confirm('Your cart has items from another restaurant. Start a new cart?')) return;
+            const fromName = App.cart[0].restaurantName || 'another restaurant';
+            if (!confirm(`Your cart has items from ${fromName}. Adding from here will clear your cart. Continue?`)) return;
             App.cart = [];
         }
 

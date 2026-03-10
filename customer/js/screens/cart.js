@@ -329,12 +329,13 @@ const CartScreen = {
             // WhatsApp confirmation
             CartScreen.sendWhatsAppConfirmation(order);
 
-            // UPI payment
+            // UPI payment — restaurant_upi_id comes from order response
             if (this.paymentMethod === 'upi') {
-                const upiURL = `upi://pay?pa=${encodeURIComponent(order.restaurant?.upi_id || '')}&pn=${encodeURIComponent(App.cart[0].restaurantName)}&am=${order.total_amount}&cu=INR&tn=CORA_${order.order_number}`;
+                const upiId  = order.restaurant_upi_id || '';
+                const upiURL = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(order.restaurant_name || App.cart[0].restaurantName)}&am=${parseFloat(order.total_amount).toFixed(2)}&cu=INR&tn=CORA_${order.order_number}`;
                 window.location.href = upiURL;
                 setTimeout(() => {
-                    if (confirm("Have you completed the UPI payment?")) {
+                    if (confirm('Have you completed the UPI payment? Tap OK to confirm.')) {
                         API.put('/customer/order.php', { id: order.id, payment_status: 'paid' }).catch(() => {});
                     }
                 }, 3000);
@@ -370,38 +371,37 @@ const CartScreen = {
                 <button class="btn-secondary" style="width:100%;" onclick="window.location.hash='#home'">
                     Back to Home
                 </button>
+                ${CartScreen._waConfirmLink ? `
+                <a href="${CartScreen._waConfirmLink}" target="_blank" rel="noopener"
+                   style="display:block;width:100%;margin-top:12px;padding:14px;background:#25D366;color:white;border-radius:14px;font-weight:600;font-size:14px;text-align:center;text-decoration:none;box-sizing:border-box;">
+                    💬 Share Order on WhatsApp
+                </a>` : ''}
             </div>
             <style>
                 @keyframes bounceIn {
-                    0% { transform: scale(0); opacity: 0; }
-                    60% { transform: scale(1.2); }
-                    100% { transform: scale(1); opacity: 1; }
+                    0%   { transform: scale(0);   opacity: 0; }
+                    60%  { transform: scale(1.2); opacity: 1; }
+                    100% { transform: scale(1);   opacity: 1; }
                 }
             </style>
         `);
     },
 
+    _waConfirmLink: null,
+
     sendWhatsAppConfirmation(order) {
-        // Generate WhatsApp message for customer
-        const items = App.cart.map(i => `${i.quantity}x ${i.name} = ₹${(i.price * i.quantity).toFixed(0)}`).join('\n');
+        const cartSnapshot = [...App.cart]; // snapshot before cart is cleared
+        const items = cartSnapshot.map(i => `${i.quantity}x ${i.name} = ₹${(i.price * i.quantity).toFixed(0)}`).join('\n');
         const msg = encodeURIComponent(
             `✅ Your CORA Order is Confirmed!\n\n` +
             `Order: ${order.order_number}\n` +
-            `Restaurant: ${App.cart[0]?.restaurantName || ''}\n\n` +
+            `Restaurant: ${order.restaurant_name || cartSnapshot[0]?.restaurantName || ''}\n\n` +
             `Items:\n${items}\n\n` +
             `Total: ₹${parseFloat(order.total_amount).toFixed(0)}\n` +
             `Payment: ${order.payment_method?.toUpperCase()}\n\n` +
             `Track your order in the Cora app!`
         );
         const phone = App.user?.phone?.replace(/\D/g, '') || '';
-        if (phone) {
-            const link = `https://wa.me/${phone}?text=${msg}`;
-            // Open silently (may be blocked, that's ok)
-            const a = document.createElement('a');
-            a.href = link;
-            a.target = '_blank';
-            // Don't force open — just provide link
-            console.log('WhatsApp confirmation link:', link);
-        }
+        this._waConfirmLink = phone ? `https://wa.me/${phone}?text=${msg}` : null;
     }
 };

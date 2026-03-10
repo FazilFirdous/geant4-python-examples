@@ -205,7 +205,14 @@ function handlePlaceOrder(): void {
 
         $db->commit();
 
-        $stmt = $db->prepare("SELECT * FROM orders WHERE id = ?");
+        /* Fetch created order + restaurant UPI ID (needed for UPI deep link on client) */
+        $stmt = $db->prepare("
+            SELECT o.*, r.name AS restaurant_name, r.upi_id AS restaurant_upi_id,
+                   r.phone AS restaurant_phone, r.full_address AS restaurant_address
+            FROM orders o
+            JOIN restaurants r ON r.id = o.restaurant_id
+            WHERE o.id = ?
+        ");
         $stmt->execute([$orderId]);
         $order = $stmt->fetch();
 

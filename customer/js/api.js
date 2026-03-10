@@ -51,12 +51,17 @@ const API = {
     async upload(endpoint, formData) {
         const token = this._getToken();
         const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-        const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'POST',
-            headers,
-            body: formData
-        });
-        return response.json();
+        try {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                method: 'POST',
+                headers,
+                body: formData
+            });
+            return response.json();
+        } catch (e) {
+            if (!navigator.onLine) throw new Error('No internet connection');
+            throw e;
+        }
     },
 
     // Customer endpoints
