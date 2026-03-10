@@ -23,9 +23,12 @@ const Loading = {
 
     error(msg = 'Something went wrong', retryFn = null) {
         return `
-            <div style="background:var(--danger);color:white;padding:16px;margin:16px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;">
-                <span>⚠️ ${msg}</span>
-                ${retryFn ? `<button onclick="${retryFn}" style="background:white;color:var(--danger);border:none;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer;">Retry</button>` : ''}
+            <div style="background:var(--berry);color:white;padding:16px 20px;margin:16px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <span style="font-size:14px;">${msg}</span>
+                </div>
+                ${retryFn ? `<button onclick="${retryFn}" style="background:white;color:var(--berry);border:none;border-radius:8px;padding:6px 14px;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;">Retry</button>` : ''}
             </div>
         `;
     }

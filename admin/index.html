@@ -7,57 +7,48 @@
     <title>Cora — Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="/admin/css/style.css">
+    <link rel="stylesheet" href="/cora/admin/css/style.css">
 </head>
 <body>
     <div id="app">
         <!-- Loading -->
         <div id="loading-screen" class="loading-screen">
             <div style="text-align:center;color:white;">
-                <div style="font-size:60px;">👑</div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <h1 style="font-family:'Playfair Display',serif;font-size:36px;margin-top:12px;">Cora Admin</h1>
                 <p style="opacity:0.8;margin-top:4px;">Master Control Panel</p>
             </div>
             <div class="loading-spinner"></div>
         </div>
 
-        <!-- Auth -->
+        <!-- Auth — Demo mode, phone only -->
         <div id="auth-screen" style="display:none;">
             <div class="header-gradient" style="padding:60px 24px 50px;text-align:center;position:relative;overflow:hidden;">
                 <div class="header-circles"></div>
-                <div style="font-size:52px;">👑</div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <h1 style="font-family:'Playfair Display',serif;font-size:32px;color:white;margin-top:8px;">Admin Login</h1>
                 <p style="color:rgba(255,255,255,0.8);font-size:14px;">Cora Master Control Panel</p>
             </div>
             <div style="padding:32px 24px;background:var(--berry-light);">
-                <div id="admin-phone-step">
-                    <div class="form-group"><label>Admin Phone</label>
-                        <div class="phone-input-wrap">
-                            <span class="country-prefix">🇮🇳 +91</span>
-                            <input type="tel" id="phone-input" placeholder="Admin phone number" maxlength="10" inputmode="numeric">
-                        </div>
+                <div class="form-group"><label>Admin Phone</label>
+                    <div class="phone-input-wrap">
+                        <span class="country-prefix">🇮🇳 +91</span>
+                        <input type="tel" id="phone-input" placeholder="Admin phone number" maxlength="10" inputmode="numeric">
                     </div>
-                    <button class="btn-primary" style="width:100%;" onclick="AdminAuth.sendOTP()">Send OTP</button>
-                    <div id="recaptcha-container"></div>
                 </div>
-                <div id="admin-otp-step" style="display:none;">
-                    <div class="form-group"><label>OTP</label>
-                        <input type="number" id="otp-input" placeholder="••••••" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:8px;font-weight:700;">
-                    </div>
-                    <button class="btn-primary" style="width:100%;" onclick="AdminAuth.verifyOTP()">Verify & Login</button>
-                    <button class="btn-secondary" style="width:100%;margin-top:10px;" onclick="AdminAuth.reset()">← Back</button>
-                </div>
+                <button class="btn-primary" style="width:100%;" id="admin-login-btn" onclick="AdminAuth.login()">Login</button>
+                <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">Demo mode — no OTP needed</p>
+                <p style="text-align:center;margin-top:6px;font-size:12px;color:var(--text-muted);">Use phone: 9999900003</p>
             </div>
         </div>
 
         <!-- Main Admin App -->
         <div id="main-app" style="display:none;">
-            <!-- Sidebar / Top Nav -->
             <div class="header-gradient" style="padding:50px 20px 0;position:relative;overflow:hidden;">
                 <div class="header-circles"></div>
                 <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-bottom:0;">
                     <div>
-                        <h1 style="font-family:'Playfair Display',serif;font-size:22px;color:white;font-weight:700;">👑 Admin Panel</h1>
+                        <h1 style="font-family:'Playfair Display',serif;font-size:22px;color:white;font-weight:700;">Admin Panel</h1>
                         <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:2px;">Cora Master Control</p>
                     </div>
                     <button onclick="AdminAuth.logout()" style="background:rgba(255,255,255,0.2);border:none;border-radius:10px;color:white;padding:8px 12px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">Logout</button>
@@ -66,12 +57,38 @@
 
             <!-- Tab Nav -->
             <div class="admin-tab-nav" id="admin-tab-nav">
-                ${['dashboard','restaurants','orders','delivery','financial','coupons','settlement','support'].map((t,i) => `
-                    <div class="admin-tab ${i===0?'active':''}" data-tab="${t}" onclick="Admin.switchTab('${t}')">
-                        ${{dashboard:'📊',restaurants:'🏪',orders:'📦',delivery:'🛵',financial:'💰',coupons:'🎁',settlement:'📋',support:'💬'}[t]}
-                        <span>${t.charAt(0).toUpperCase()+t.slice(1)}</span>
-                    </div>
-                `).join('')}
+                <div class="admin-tab active" data-tab="dashboard" onclick="Admin.switchTab('dashboard')">
+                    <i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="admin-tab" data-tab="restaurants" onclick="Admin.switchTab('restaurants')">
+                    <i data-lucide="store" style="width:16px;height:16px;"></i>
+                    <span>Restaurants</span>
+                </div>
+                <div class="admin-tab" data-tab="orders" onclick="Admin.switchTab('orders')">
+                    <i data-lucide="clipboard-list" style="width:16px;height:16px;"></i>
+                    <span>Orders</span>
+                </div>
+                <div class="admin-tab" data-tab="delivery" onclick="Admin.switchTab('delivery')">
+                    <i data-lucide="bike" style="width:16px;height:16px;"></i>
+                    <span>Delivery</span>
+                </div>
+                <div class="admin-tab" data-tab="financial" onclick="Admin.switchTab('financial')">
+                    <i data-lucide="indian-rupee" style="width:16px;height:16px;"></i>
+                    <span>Financial</span>
+                </div>
+                <div class="admin-tab" data-tab="coupons" onclick="Admin.switchTab('coupons')">
+                    <i data-lucide="ticket" style="width:16px;height:16px;"></i>
+                    <span>Coupons</span>
+                </div>
+                <div class="admin-tab" data-tab="settlement" onclick="Admin.switchTab('settlement')">
+                    <i data-lucide="wallet" style="width:16px;height:16px;"></i>
+                    <span>Settlement</span>
+                </div>
+                <div class="admin-tab" data-tab="support" onclick="Admin.switchTab('support')">
+                    <i data-lucide="message-circle" style="width:16px;height:16px;"></i>
+                    <span>Support</span>
+                </div>
             </div>
 
             <div id="admin-content" style="overflow-y:auto;height:calc(100vh - 175px);padding-bottom:20px;"></div>
@@ -80,16 +97,20 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="/admin/js/api.js"></script>
-    <script src="/admin/js/dashboard.js"></script>
-    <script src="/admin/js/restaurants.js"></script>
-    <script src="/admin/js/orders.js"></script>
-    <script src="/admin/js/delivery.js"></script>
-    <script src="/admin/js/financial.js"></script>
-    <script src="/admin/js/coupons.js"></script>
-    <script src="/admin/js/support.js"></script>
-    <script src="/admin/js/app.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="/cora/admin/js/api.js"></script>
+    <script src="/cora/admin/js/dashboard.js"></script>
+    <script src="/cora/admin/js/restaurants.js"></script>
+    <script src="/cora/admin/js/orders.js"></script>
+    <script src="/cora/admin/js/delivery.js"></script>
+    <script src="/cora/admin/js/financial.js"></script>
+    <script src="/cora/admin/js/coupons.js"></script>
+    <script src="/cora/admin/js/support.js"></script>
+    <script src="/cora/admin/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
