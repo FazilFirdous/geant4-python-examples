@@ -1,0 +1,23 @@
+Options -Indexes
+
+# Deny direct access to config files
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "database.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+<Files "jwt.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Allow .php files to be accessed via API
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# CORS and JSON headers handled by PHP
