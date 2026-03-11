@@ -47,7 +47,7 @@ const AdminOrders = {
                     ${o.status !== 'delivered' && o.status !== 'cancelled' ?
                         `<button class="btn-xs btn-danger" onclick="AdminOrders.cancelOrder(${o.id})">Cancel</button>` : ''}
                     ${o.customer_phone ?
-                        `<a class="btn-xs btn-wa" href="https://wa.me/${o.customer_phone.replace('+','')}" target="_blank">💬 WA</a>` : ''}
+                        `<a class="btn-xs btn-wa" href="https://wa.me/${o.customer_phone.replace('+','')}" target="_blank">WA</a>` : ''}
                 </td>
             </tr>`).join('')}
             </tbody></table></div>`;
@@ -92,7 +92,7 @@ const AdminOrders = {
                     ${o.status !== 'delivered' && o.status !== 'cancelled' ?
                         `<button class="btn-danger btn-sm" onclick="AdminOrders.cancelOrder(${o.id})">Cancel Order</button>` : ''}
                     ${o.customer_phone ?
-                        `<a class="btn-wa btn-sm" href="https://wa.me/${o.customer_phone.replace('+','')}?text=Hi%20${encodeURIComponent(o.customer_name)}%2C%20this%20is%20Cora%20support%20regarding%20your%20order%20${o.order_number}" target="_blank">💬 WhatsApp Customer</a>` : ''}
+                        `<a class="btn-wa btn-sm" href="https://wa.me/${o.customer_phone.replace('+','')}?text=Hi%20${encodeURIComponent(o.customer_name)}%2C%20this%20is%20Cora%20support%20regarding%20your%20order%20${o.order_number}" target="_blank">WhatsApp Customer</a>` : ''}
                 </div>
             </div>
         </div>`;

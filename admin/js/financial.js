@@ -42,10 +42,10 @@ const AdminFinancial = {
         const { totals, restaurants } = res.data;
 
         totalsWrap.innerHTML = `<div class="stat-grid">
-            ${this._stat('💸', 'GMV', '₹' + (totals.gmv || 0))}
-            ${this._stat('💰', 'Commission', '₹' + (totals.commission || 0))}
-            ${this._stat('🛵', 'Delivery Fees', '₹' + (totals.delivery_fees || 0))}
-            ${this._stat('📦', 'Orders', totals.orders || 0)}
+            ${this._stat('wallet', 'GMV', '₹' + (totals.gmv || 0))}
+            ${this._stat('indian-rupee', 'Commission', '₹' + (totals.commission || 0))}
+            ${this._stat('bike', 'Delivery Fees', '₹' + (totals.delivery_fees || 0))}
+            ${this._stat('package', 'Orders', totals.orders || 0)}
         </div>`;
 
         if (!restaurants || !restaurants.length) {
@@ -86,7 +86,7 @@ const AdminFinancial = {
     },
 
     _stat(icon, label, value) {
-        return `<div class="stat-card"><div class="stat-icon">${icon}</div>
+        return `<div class="stat-card"><div class="stat-icon"><i data-lucide="${icon}" style="width:22px;height:22px;color:var(--berry);"></i></div>
             <div class="stat-value">${value}</div><div class="stat-label">${label}</div></div>`;
     }
 };

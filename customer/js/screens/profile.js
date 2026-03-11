@@ -7,8 +7,8 @@ const ProfileScreen = {
                     <h2 style="color:white;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;">My Profile</h2>
                 </div>
                 <div style="position:relative;z-index:1;text-align:center;margin-top:12px;">
-                    <div style="width:72px;height:72px;background:rgba(255,255,255,0.2);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;">
-                        ${user.name ? user.name[0].toUpperCase() : '👤'}
+                    <div style="width:72px;height:72px;background:rgba(255,255,255,0.2);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:white;">
+                        ${user.name ? user.name[0].toUpperCase() : '<i data-lucide="user" style="width:32px;height:32px;"></i>'}
                     </div>
                     <div style="color:white;font-weight:700;font-size:18px;margin-top:8px;">${user.name || 'Guest'}</div>
                     <div style="color:rgba(255,255,255,0.8);font-size:13px;">${user.phone || ''}</div>
@@ -45,26 +45,26 @@ const ProfileScreen = {
                 <div class="card" style="padding:16px;margin-bottom:12px;">
                     <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:14px;">Settings</div>
                     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
-                        <span>🔔 Order Notifications</span>
+                        <span style="display:inline-flex;align-items:center;gap:8px;"><i data-lucide="bell" style="width:16px;height:16px;color:var(--berry);"></i> Order Notifications</span>
                         <div class="toggle-switch on"></div>
                     </div>
                 </div>
 
                 <!-- Legal -->
                 <div class="card" style="padding:8px 16px;margin-bottom:12px;">
-                    <a href="/privacy-policy.html" target="_blank" style="display:block;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--berry-border);font-size:14px;">🔒 Privacy Policy</a>
-                    <a href="/terms.html" target="_blank" style="display:block;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--berry-border);font-size:14px;">📋 Terms of Service</a>
-                    <a href="/refund-policy.html" target="_blank" style="display:block;padding:12px 0;color:var(--text);text-decoration:none;font-size:14px;">💰 Refund Policy</a>
+                    <a href="/privacy-policy.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--berry-border);font-size:14px;"><i data-lucide="shield" style="width:16px;height:16px;color:var(--berry);"></i> Privacy Policy</a>
+                    <a href="/terms.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--text);text-decoration:none;border-bottom:1px solid var(--berry-border);font-size:14px;"><i data-lucide="file-text" style="width:16px;height:16px;color:var(--berry);"></i> Terms of Service</a>
+                    <a href="/refund-policy.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:12px 0;color:var(--text);text-decoration:none;font-size:14px;"><i data-lucide="wallet" style="width:16px;height:16px;color:var(--berry);"></i> Refund Policy</a>
                 </div>
 
                 <!-- App Version -->
                 <div style="text-align:center;color:var(--text-muted);font-size:12px;margin-bottom:16px;">
-                    Cora v1.0.0 · Made with ❤️ for Kulgam
+                    Cora v1.0.0 · Made for Kulgam
                 </div>
 
                 <!-- Logout -->
                 <button class="btn-danger" style="width:100%;padding:14px;" onclick="ProfileScreen.confirmLogout()">
-                    🚪 Logout
+                    <i data-lucide="log-out" style="width:16px;height:16px;"></i> Logout
                 </button>
             </div>
         `);
@@ -86,12 +86,12 @@ const ProfileScreen = {
 
             el.innerHTML = addrs.map(a => `
                 <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--berry-border);">
-                    <span style="font-size:20px;">${a.label === 'Home' ? '🏠' : (a.label === 'Work' ? '🏢' : '📍')}</span>
+                    <span style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--berry-light);border-radius:50%;flex-shrink:0;"><i data-lucide="${a.label === 'Home' ? 'home' : (a.label === 'Work' ? 'briefcase' : 'map-pin')}" style="width:16px;height:16px;color:var(--berry);"></i></span>
                     <div style="flex:1;">
                         <div style="font-size:13px;font-weight:700;">${a.label}${a.is_default ? ' <span style="font-size:10px;background:var(--berry);color:white;padding:1px 6px;border-radius:4px;">DEFAULT</span>' : ''}</div>
                         <div style="font-size:12px;color:var(--text-muted);">${a.full_address}${a.landmark ? ', '+a.landmark : ''}</div>
                     </div>
-                    <button onclick="ProfileScreen.deleteAddress(${a.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:18px;">🗑️</button>
+                    <button onclick="ProfileScreen.deleteAddress(${a.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>
                 </div>
             `).join('');
         } catch (e) {

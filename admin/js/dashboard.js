@@ -12,10 +12,10 @@ const AdminDashboard = {
 
             <!-- Stat Cards -->
             <div class="stat-grid">
-                ${this._stat('📦', 'Orders Today', d.today_orders ?? 0, '')}
-                ${this._stat('💰', 'Revenue Today', '₹' + (d.today_revenue ?? 0), '')}
-                ${this._stat('🏪', 'Active Restaurants', d.active_restaurants ?? 0, '')}
-                ${this._stat('🎫', 'Open Tickets', d.open_tickets ?? 0, d.open_tickets > 0 ? 'color:var(--berry)' : '')}
+                ${this._stat('package', 'Orders Today', d.today_orders ?? 0, '')}
+                ${this._stat('indian-rupee', 'Revenue Today', '₹' + (d.today_revenue ?? 0), '')}
+                ${this._stat('store', 'Active Restaurants', d.active_restaurants ?? 0, '')}
+                ${this._stat('ticket', 'Open Tickets', d.open_tickets ?? 0, d.open_tickets > 0 ? 'color:var(--berry)' : '')}
             </div>
 
             <!-- Week Chart -->
@@ -51,7 +51,7 @@ const AdminDashboard = {
     },
 
     _stat(icon, label, value, style) {
-        return `<div class="stat-card"><div class="stat-icon">${icon}</div>
+        return `<div class="stat-card"><div class="stat-icon"><i data-lucide="${icon}" style="width:22px;height:22px;color:var(--berry);"></i></div>
             <div class="stat-value" style="${style}">${value}</div>
             <div class="stat-label">${label}</div></div>`;
     },

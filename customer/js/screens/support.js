@@ -10,7 +10,7 @@ const SupportScreen = {
                 <div class="screen-header">
                     <div style="position:relative;z-index:1;">
                         <h2 style="color:white;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;">Help & Support</h2>
-                        <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:2px;">We're here to help! 💬</p>
+                        <p style="color:rgba(255,255,255,0.8);font-size:13px;margin-top:2px;">We're here to help!</p>
                     </div>
                 </div>
 
@@ -19,7 +19,7 @@ const SupportScreen = {
             </div>
         `);
 
-        this.addBotMessage(`Hi ${App.user?.name?.split(' ')[0] || 'there'}! 👋 How can I help you today?`);
+        this.addBotMessage(`Hi ${App.user?.name?.split(' ')[0] || 'there'}! How can I help you today?`);
         setTimeout(() => this.showMainMenu(), 600);
     },
 
@@ -59,13 +59,13 @@ const SupportScreen = {
 
     showMainMenu() {
         this.addActions([
-            { id: 'track_order',     label: '📦 Track my order' },
-            { id: 'wrong_item',      label: '❌ Wrong/missing item' },
-            { id: 'refund',          label: '💰 Refund request' },
-            { id: 'cancel_order',    label: '🚫 Cancel order' },
-            { id: 'quality',         label: '😕 Food quality issue' },
-            { id: 'delivery_delay',  label: '⏰ Delivery delay' },
-            { id: 'talk_to_human',   label: '💬 Talk to support team' },
+            { id: 'track_order',     label: 'Track my order' },
+            { id: 'wrong_item',      label: 'Wrong/missing item' },
+            { id: 'refund',          label: 'Refund request' },
+            { id: 'cancel_order',    label: 'Cancel order' },
+            { id: 'quality',         label: 'Food quality issue' },
+            { id: 'delivery_delay',  label: 'Delivery delay' },
+            { id: 'talk_to_human',   label: 'Talk to support team' },
         ]);
     },
 
@@ -92,7 +92,7 @@ const SupportScreen = {
     handleTrackOrder() {
         this.addBotMessage('Please provide your order number, or I can show your latest order.');
         this.addActions([
-            { id: 'show_latest', label: '📋 Show latest order' },
+            { id: 'show_latest', label: 'Show latest order' },
             { id: 'back_menu',   label: '← Back' }
         ]);
     },
@@ -100,7 +100,7 @@ const SupportScreen = {
     handleWrongItem() {
         this.addBotMessage('Sorry about that! For wrong or missing items, we\'ll process a refund for the affected items within 3-5 business days.');
         this.addActions([
-            { id: 'talk_to_human', label: '📞 Contact support for refund' },
+            { id: 'talk_to_human', label: 'Contact support for refund' },
             { id: 'back_menu',     label: '← Back' }
         ]);
     },
@@ -108,7 +108,7 @@ const SupportScreen = {
     handleRefund() {
         this.addBotMessage('Refund requests are processed within 3-5 business days. Here\'s our refund policy:\n\n• Wrong item: Full refund/replacement\n• Missing items: Refund for missing items\n• Quality issue: Review with photo\n• Cancelled before accepted: Full refund');
         this.addActions([
-            { id: 'talk_to_human', label: '📞 Raise a refund request' },
+            { id: 'talk_to_human', label: 'Raise a refund request' },
             { id: 'back_menu',     label: '← Back' }
         ]);
     },
@@ -116,7 +116,7 @@ const SupportScreen = {
     handleCancelOrder() {
         this.addBotMessage('Orders can be cancelled before the restaurant accepts them. After acceptance, cancellation may not be possible.\n\nWould you like to proceed?');
         this.addActions([
-            { id: 'talk_to_human', label: '📞 Cancel my order' },
+            { id: 'talk_to_human', label: 'Cancel my order' },
             { id: 'back_menu',     label: '← Back' }
         ]);
     },
@@ -124,7 +124,7 @@ const SupportScreen = {
     handleQuality() {
         this.addBotMessage('We\'re sorry about the quality issue. Please take a photo of the food and contact our support team. We\'ll resolve this as quickly as possible.');
         this.addActions([
-            { id: 'talk_to_human', label: '📸 Report quality issue' },
+            { id: 'talk_to_human', label: 'Report quality issue' },
             { id: 'back_menu',     label: '← Back' }
         ]);
     },
@@ -132,7 +132,7 @@ const SupportScreen = {
     handleDelay() {
         this.addBotMessage('We apologize for the delay! Delivery times can be affected by traffic and distance. If your order is 30+ minutes late, you\'re eligible for ₹50 credit.');
         this.addActions([
-            { id: 'talk_to_human', label: '📞 Get ₹50 credit for delay' },
+            { id: 'talk_to_human', label: 'Get ₹50 credit for delay' },
             { id: 'back_menu',     label: '← Back' }
         ]);
     },
@@ -143,7 +143,7 @@ const SupportScreen = {
         // Build conversation history for WhatsApp
         const messages = Array.from(document.querySelectorAll('.chat-bubble')).map(el => {
             const isBot  = el.classList.contains('bot');
-            return `${isBot ? '🤖 Bot' : '👤 Customer'}: ${el.textContent.trim()}`;
+            return `${isBot ? 'Bot' : 'Customer'}: ${el.textContent.trim()}`;
         }).join('\n');
 
         const user    = App.user;
@@ -152,9 +152,9 @@ const SupportScreen = {
 
         setTimeout(() => {
             this.addBotMessage(`
-                ✅ Our support team will help you!<br><br>
+                Our support team will help you!<br><br>
                 <a href="${waURL}" target="_blank" style="display:inline-block;background:#25D366;color:white;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:8px;">
-                    💬 Open WhatsApp Support
+                    Open WhatsApp Support
                 </a>
             `);
         }, 1000);

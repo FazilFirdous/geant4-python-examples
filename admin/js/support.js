@@ -49,7 +49,7 @@ const AdminSupport = {
             <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="btn-primary btn-sm" onclick="AdminSupport.respond(${t.id})">Reply</button>
                 ${t.status !== 'resolved' ? `<button class="btn-success btn-sm" onclick="AdminSupport.resolve(${t.id})">✓ Resolve</button>` : ''}
-                ${t.customer_phone ? `<a class="btn-wa btn-sm" href="https://wa.me/${t.customer_phone.replace('+','')}?text=Hi%20${encodeURIComponent(t.customer_name || '')}%2C%20this%20is%20Cora%20support%20regarding%20ticket%20%23${t.id}" target="_blank">💬 WhatsApp</a>` : ''}
+                ${t.customer_phone ? `<a class="btn-wa btn-sm" href="https://wa.me/${t.customer_phone.replace('+','')}?text=Hi%20${encodeURIComponent(t.customer_name || '')}%2C%20this%20is%20Cora%20support%20regarding%20ticket%20%23${t.id}" target="_blank">WhatsApp</a>` : ''}
             </div>
         </div>`).join('');
     },
