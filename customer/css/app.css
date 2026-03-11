@@ -1422,3 +1422,76 @@ body {
         height: calc(100vh - 40px);
     }
 }
+
+/* ═══ LUCIDE ICON SYSTEM ═══ */
+/* Nav icons */
+.nav-icon i,
+.nav-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.8;
+    color: var(--text-muted);
+    display: block;
+}
+
+.nav-item.active .nav-icon i,
+.nav-item.active .nav-icon svg {
+    color: var(--berry);
+    filter: drop-shadow(0 0 4px rgba(209,56,108,0.35));
+}
+
+/* Category pill icons */
+.cat-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.cat-icon-wrap i,
+.cat-icon-wrap svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.8;
+    color: var(--text-muted);
+}
+
+.category-pill.active .cat-icon-wrap i,
+.category-pill.active .cat-icon-wrap svg {
+    color: white;
+}
+
+/* Badge icons (clock, flame etc. inline in cards) */
+.badge-delivery-time svg,
+.badge-promoted svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+/* Logo icon in loading screen */
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    animation: pulse 2s infinite;
+}
+
+/* Header search + address icons */
+.header-address-bar i,
+.header-address-bar svg,
+.header-search i,
+.header-search svg {
+    width: 16px;
+    height: 16px;
+    stroke: rgba(255,255,255,0.8);
+    flex-shrink: 0;
+}
+
+/* Error/empty state icons */
+.empty-state svg {
+    animation: float 3s ease-in-out infinite;
+}
+

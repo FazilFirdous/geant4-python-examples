@@ -1,12 +1,19 @@
 const Navbar = {
+    _bound: false,
+
     init() {
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                const screen = item.dataset.screen;
-                window.location.hash = '#' + screen;
+        if (!this._bound) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const screen = item.dataset.screen;
+                    window.location.hash = '#' + screen;
+                });
             });
-        });
+            this._bound = true;
+        }
+        // Activate icons
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     },
 
     setActive(screen) {
