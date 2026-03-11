@@ -354,8 +354,13 @@ const CartScreen = {
     showOrderSuccess(order) {
         App.setScreen(`
             <div style="text-align:center;padding:60px 24px;">
-                <div id="success-animation" style="font-size:80px;animation:bounceIn 0.6s ease;">✅</div>
-                <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-top:20px;color:var(--text);">Order Placed! 🎉</h2>
+                <div id="success-animation" style="animation:bounceIn 0.6s ease;">
+                    <svg width="100" height="100" viewBox="0 0 100 100" style="display:block;margin:0 auto;">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--green)" stroke-width="4" stroke-dasharray="283" stroke-dashoffset="283" style="animation:drawCircle 0.6s ease forwards;"/>
+                        <path d="M30 52 L44 66 L70 38" fill="none" stroke="var(--green)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="60" stroke-dashoffset="60" style="animation:drawCheck 0.4s ease 0.5s forwards;"/>
+                    </svg>
+                </div>
+                <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-top:20px;color:var(--text);">Order Placed!</h2>
                 <p style="color:var(--text-sub);margin-top:8px;font-size:15px;">Your order has been sent to the restaurant</p>
                 <div class="card" style="padding:20px;margin:24px 0;text-align:left;">
                     <div style="font-size:13px;color:var(--text-muted);">Order Number</div>
@@ -382,6 +387,12 @@ const CartScreen = {
                     0%   { transform: scale(0);   opacity: 0; }
                     60%  { transform: scale(1.2); opacity: 1; }
                     100% { transform: scale(1);   opacity: 1; }
+                }
+                @keyframes drawCircle {
+                    to { stroke-dashoffset: 0; }
+                }
+                @keyframes drawCheck {
+                    to { stroke-dashoffset: 0; }
                 }
             </style>
         `);
