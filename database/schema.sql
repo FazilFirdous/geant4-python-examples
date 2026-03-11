@@ -169,6 +169,9 @@ CREATE TABLE orders (
     cancel_reason TEXT DEFAULT NULL,
     cancelled_by ENUM('customer','restaurant','admin') DEFAULT NULL,
 
+    is_scheduled TINYINT(1) NOT NULL DEFAULT 0,
+    scheduled_for DATETIME DEFAULT NULL,
+
     FOREIGN KEY (customer_id) REFERENCES users(id),
     FOREIGN KEY (restaurant_id) REFERENCES restaurants(id),
     FOREIGN KEY (delivery_boy_id) REFERENCES delivery_boys(id) ON DELETE SET NULL,
@@ -303,6 +306,26 @@ CREATE TABLE public_delivery_pool (
     FOREIGN KEY (claimed_by) REFERENCES delivery_boys(id) ON DELETE SET NULL,
     INDEX idx_status (status),
     INDEX idx_open_orders (status, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ═══ WEEKLY SETTLEMENTS ═══
+CREATE TABLE weekly_settlements (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    restaurant_id INT UNSIGNED NOT NULL,
+    week_start DATE NOT NULL,
+    week_end DATE NOT NULL,
+    total_orders INT UNSIGNED NOT NULL DEFAULT 0,
+    gross_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    commission_amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    delivery_fees_collected DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    net_payout DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    status ENUM('pending','paid','disputed') NOT NULL DEFAULT 'pending',
+    paid_at TIMESTAMP NULL DEFAULT NULL,
+    notes TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(id),
+    INDEX idx_restaurant_week (restaurant_id, week_start),
+    INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ═══ DEFAULT DATA ═══

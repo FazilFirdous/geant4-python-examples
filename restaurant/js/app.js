@@ -16,6 +16,7 @@ const Dashboard = {
                     const me = await RApi.getMe();
                     if (me?.success && me.data.role === 'restaurant_owner') {
                         Dashboard.user = me.data;
+                        if (me.data.restaurant) Dashboard.restaurant = me.data.restaurant;
                         Dashboard.showDashboard();
                         return;
                     }
@@ -34,11 +35,31 @@ const Dashboard = {
         document.getElementById('main-app').style.display = 'none';
     },
 
-    showDashboard() {
+    async showDashboard() {
         document.getElementById('loading-screen').style.display = 'none';
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // Fetch and display restaurant info in header
+        try {
+            const me = await RApi.getMe();
+            if (me?.success && me.data.restaurant) {
+                const r = me.data.restaurant;
+                Dashboard.restaurant = r;
+                const nameEl = document.getElementById('restaurant-name-header');
+                const statusEl = document.getElementById('restaurant-status-text');
+                const toggleIcon = document.getElementById('open-toggle-icon');
+                const toggleText = document.getElementById('open-toggle-text');
+                if (nameEl) nameEl.textContent = r.name;
+                if (statusEl) statusEl.textContent = `⭐ ${r.rating} · ${r.total_orders || 0} orders`;
+                if (toggleIcon) toggleIcon.style.background = r.is_open == 1 ? '#1DB954' : '#E53935';
+                if (toggleText) toggleText.textContent = r.is_open == 1 ? 'Open' : 'Closed';
+            }
+        } catch (e) {
+            console.error('Failed to load restaurant info:', e);
+        }
+
         this.switchTab('orders');
         this.startPolling();
     },
