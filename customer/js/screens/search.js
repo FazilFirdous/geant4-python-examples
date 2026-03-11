@@ -9,7 +9,7 @@ const SearchScreen = {
                         <div style="display:flex;align-items:center;gap:10px;">
                             <button class="screen-back-btn" onclick="history.back()">←</button>
                             <div style="flex:1;background:white;border-radius:12px;display:flex;align-items:center;padding:10px 14px;gap:8px;">
-                                <span>🔍</span>
+                                <i data-lucide="search" style="width:16px;height:16px;color:var(--text-muted);flex-shrink:0;"></i>
                                 <input type="text" id="search-input" placeholder="Search restaurants or dishes..."
                                        style="border:none;outline:none;font-size:14px;width:100%;font-family:'DM Sans',sans-serif;"
                                        autofocus oninput="SearchScreen.onSearch(this.value)">
@@ -21,13 +21,13 @@ const SearchScreen = {
 
                 <!-- Veg Only Toggle -->
                 <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:white;border-bottom:1px solid var(--berry-border);">
-                    <span style="font-size:14px;font-weight:600;color:var(--green);">🥗 Vegetarian Only</span>
+                    <span style="font-size:14px;font-weight:600;color:var(--green);display:inline-flex;align-items:center;gap:6px;"><i data-lucide="leaf" style="width:14px;height:14px;"></i> Vegetarian Only</span>
                     <div class="toggle-switch" id="search-veg-toggle" onclick="SearchScreen.toggleVeg()"></div>
                 </div>
 
                 <div id="search-results" style="padding:16px 16px 80px;">
                     <div class="empty-state">
-                        <div class="empty-state-emoji">🔍</div>
+                        <div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="search" style="width:28px;height:28px;color:var(--berry);"></i></div>
                         <h3>Search for food</h3>
                         <p>Type a restaurant name, cuisine, or dish</p>
                     </div>
@@ -59,7 +59,7 @@ const SearchScreen = {
         if (!query.trim()) {
             document.getElementById('search-results').innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-emoji">🔍</div>
+                    <div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="search" style="width:28px;height:28px;color:var(--berry);"></i></div>
                     <h3>Search for food</h3>
                     <p>Type a restaurant name, cuisine, or dish</p>
                 </div>
@@ -83,7 +83,7 @@ const SearchScreen = {
             if (!restaurants.length) {
                 document.getElementById('search-results').innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-emoji">🍽️</div>
+                        <div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="search-x" style="width:28px;height:28px;color:var(--berry);"></i></div>
                         <h3>No results found</h3>
                         <p>Try a different search term</p>
                     </div>

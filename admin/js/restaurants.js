@@ -29,7 +29,7 @@ const AdminRestaurants = {
             <tbody>${this._list.map(r => `
             <tr>
                 <td>
-                    ${r.is_promoted ? '<span class="crown-badge">👑</span> ' : ''}
+                    ${r.is_promoted ? '<span class="crown-badge" style="color:#F59E0B;">&#9733;</span> ' : ''}
                     <strong>${r.name}</strong>
                     ${r.cuisine_tags ? `<br><small style="color:#999;">${r.cuisine_tags}</small>` : ''}
                 </td>
@@ -43,7 +43,7 @@ const AdminRestaurants = {
                 <td class="action-btns">
                     <button class="btn-xs btn-outline" onclick="AdminRestaurants.editRestaurant(${r.id})">Edit</button>
                     <button class="btn-xs ${r.is_active ? 'btn-danger' : 'btn-success'}" onclick="AdminRestaurants.toggleActive(${r.id}, ${r.is_active ? 0 : 1})">${r.is_active ? 'Disable' : 'Enable'}</button>
-                    <button class="btn-xs btn-gold" onclick="AdminRestaurants.setCrown(${r.id})" title="Set Restaurant of the Week">👑</button>
+                    <button class="btn-xs btn-gold" onclick="AdminRestaurants.setCrown(${r.id})" title="Set Restaurant of the Week">&#9733;</button>
                 </td>
             </tr>`).join('')}
             </tbody></table></div>`;
@@ -148,7 +148,7 @@ const AdminRestaurants = {
     async setCrown(id) {
         /* Remove crown from everyone, set on this one */
         const res = await AApi.updateRestaurant({ id, is_promoted: 1, set_week_special: 1 });
-        if (res.success) { showToast('👑 Restaurant of the Week set!'); this._load(); }
+        if (res.success) { showToast('Restaurant of the Week set!'); this._load(); }
         else showToast('Error setting crown');
     },
 

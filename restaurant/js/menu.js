@@ -31,7 +31,9 @@ const MenuTab = {
         if (!this.menu.length) {
             el.innerHTML = `
                 <div class="empty-state">
-                    <div style="font-size:60px;">🍽️</div>
+                    <div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--berry)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+                    </div>
                     <h3 style="font-family:'Playfair Display',serif;font-size:20px;">No menu items yet</h3>
                     <p style="color:var(--text-muted);">Add your first dish to get started!</p>
                 </div>
@@ -60,7 +62,7 @@ const MenuTab = {
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
                     <div class="toggle-switch ${item.is_available ? 'on' : ''}" onclick="MenuTab.toggleItem(${item.id}, this)" title="${item.is_available ? 'Available' : 'Unavailable'}"></div>
-                    <button onclick="MenuTab.deleteItem(${item.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;padding:4px;">🗑️</button>
+                    <button onclick="MenuTab.deleteItem(${item.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;padding:4px;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
                 </div>
             </div>
         `;
@@ -107,10 +109,10 @@ const MenuTab = {
                     <div class="form-group"><label>Prep Time (minutes)</label><input type="number" name="prep_time_minutes" value="20" min="1" max="120"></div>
                     <div style="display:flex;gap:16px;margin-bottom:16px;">
                         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
-                            <input type="checkbox" name="is_veg"> 🥗 Vegetarian
+                            <input type="checkbox" name="is_veg"> Vegetarian
                         </label>
                         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
-                            <input type="checkbox" name="is_popular"> ⭐ Popular
+                            <input type="checkbox" name="is_popular"> Popular
                         </label>
                     </div>
                     <div class="form-group"><label>Item Photo (optional)</label><input type="file" name="image" accept="image/*" style="border:1.5px solid var(--berry-border);border-radius:12px;padding:10px;width:100%;"></div>

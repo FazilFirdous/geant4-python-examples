@@ -6,10 +6,12 @@ const RestaurantScreen = {
         App.setScreen(`
             <div id="restaurant-screen">
                 <div style="height:220px;position:relative;overflow:hidden;">
-                    <div id="restaurant-cover" style="width:100%;height:100%;background:linear-gradient(135deg,var(--berry),var(--berry-deep));display:flex;align-items:center;justify-content:center;font-size:80px;">🍽️</div>
+                    <div id="restaurant-cover" style="width:100%;height:100%;background:linear-gradient(135deg,var(--berry),var(--berry-deep));display:flex;align-items:center;justify-content:center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+                    </div>
                     <div style="position:absolute;top:0;left:0;right:0;padding:50px 16px 0;display:flex;justify-content:space-between;align-items:flex-start;">
-                        <button class="screen-back-btn" onclick="history.back()">←</button>
-                        <button class="screen-back-btn" id="fav-btn">🤍</button>
+                        <button class="screen-back-btn" onclick="history.back()"><i data-lucide="arrow-left" style="width:18px;height:18px;"></i></button>
+                        <button class="screen-back-btn" id="fav-btn"><i data-lucide="heart" style="width:18px;height:18px;"></i></button>
                     </div>
                 </div>
 
@@ -53,13 +55,13 @@ const RestaurantScreen = {
                         <p style="font-size:13px;color:var(--text-muted);margin-top:2px;">${restaurant.cuisine_tags || 'Multi-cuisine'}</p>
                     </div>
                     <div class="rating-badge ${ratingClass}" style="font-size:14px;padding:5px 10px;">
-                        ⭐ ${rating > 0 ? rating.toFixed(1) : 'New'}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${rating > 0 ? rating.toFixed(1) : 'New'}
                     </div>
                 </div>
                 <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
-                    <span style="font-size:13px;color:var(--text-sub);">⏱ ${restaurant.avg_prep_time_minutes || 30} min prep</span>
-                    <span style="font-size:13px;color:var(--text-sub);">🛵 ~${estDelivery} min delivery</span>
-                    <span style="font-size:13px;color:var(--text-sub);">🏠 Min ₹${restaurant.min_order_amount}</span>
+                    <span style="font-size:13px;color:var(--text-sub);display:inline-flex;align-items:center;gap:4px;"><i data-lucide="clock" style="width:13px;height:13px;"></i> ${restaurant.avg_prep_time_minutes || 30} min prep</span>
+                    <span style="font-size:13px;color:var(--text-sub);display:inline-flex;align-items:center;gap:4px;"><i data-lucide="bike" style="width:13px;height:13px;"></i> ~${estDelivery} min delivery</span>
+                    <span style="font-size:13px;color:var(--text-sub);display:inline-flex;align-items:center;gap:4px;"><i data-lucide="home" style="width:13px;height:13px;"></i> Min ₹${restaurant.min_order_amount}</span>
                 </div>
                 ${restaurant.description ? `<p style="font-size:13px;color:var(--text-sub);margin-top:8px;border-top:1px solid var(--berry-border);padding-top:8px;">${restaurant.description}</p>` : ''}
 
@@ -68,28 +70,28 @@ const RestaurantScreen = {
                     ${restaurant.accepts_delivery ? `
                         <button id="btn-delivery" class="btn-${this.orderType === 'delivery' ? 'primary' : 'secondary'}"
                                 style="flex:1;padding:10px;" onclick="RestaurantScreen.setOrderType('delivery')">
-                            🛵 Delivery
+                            <i data-lucide="bike" style="width:16px;height:16px;"></i> Delivery
                         </button>
                     ` : ''}
                     ${restaurant.accepts_pickup ? `
                         <button id="btn-pickup" class="btn-${this.orderType === 'pickup' ? 'primary' : 'secondary'}"
                                 style="flex:1;padding:10px;" onclick="RestaurantScreen.setOrderType('pickup')">
-                            🏃 Pickup
+                            <i data-lucide="walking" style="width:16px;height:16px;"></i> Pickup
                         </button>
                     ` : ''}
                 </div>
 
                 <!-- Veg Toggle -->
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px;background:var(--berry-light);border-radius:10px;">
-                    <span style="font-size:13px;font-weight:600;color:var(--green);">🥗 Veg Only</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--green);display:inline-flex;align-items:center;gap:4px;"><i data-lucide="leaf" style="width:14px;height:14px;"></i> Veg Only</span>
                     <div class="toggle-switch" id="veg-toggle" onclick="RestaurantScreen.toggleVeg()"></div>
                 </div>
 
                 ${!restaurant.is_open ? `
                     <div style="background:var(--berry-light);border:1px solid var(--berry-border);border-radius:10px;padding:12px;margin-top:12px;text-align:center;">
-                        <div style="font-weight:700;color:var(--berry);">⏰ Currently Closed</div>
+                        <div style="font-weight:700;color:var(--berry);display:flex;align-items:center;justify-content:center;gap:6px;"><i data-lucide="clock" style="width:16px;height:16px;"></i> Currently Closed</div>
                         <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Opens at ${RestaurantCard.formatTime(restaurant.opens_at)}</div>
-                        <button onclick="RestaurantScreen.notifyOpen(${restaurant.id})" class="btn-secondary" style="margin-top:10px;width:100%;padding:8px;">🔔 Notify Me When Open</button>
+                        <button onclick="RestaurantScreen.notifyOpen(${restaurant.id})" class="btn-secondary" style="margin-top:10px;width:100%;padding:8px;"><i data-lucide="bell" style="width:14px;height:14px;"></i> Notify Me When Open</button>
                     </div>
                 ` : ''}
             `;
@@ -157,7 +159,7 @@ const RestaurantScreen = {
         }).join('');
 
         if (!html.trim() || html === '') {
-            html = `<div class="empty-state"><div class="empty-state-emoji">🥗</div><h3>No items found</h3><p>Try turning off the Veg Only filter</p></div>`;
+            html = `<div class="empty-state"><div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="leaf" style="width:30px;height:30px;color:var(--berry);"></i></div><h3>No items found</h3><p>Try turning off the Veg Only filter</p></div>`;
         }
 
         document.getElementById('menu-container').innerHTML = `<div style="padding-bottom:80px;">${html}</div>`;
@@ -174,6 +176,6 @@ const RestaurantScreen = {
             waitList.push(restaurantId);
             localStorage.setItem('cora_notify_open', JSON.stringify(waitList));
         }
-        App.showToast('We\'ll notify you when they open! 🔔', 'success');
+        App.showToast('We\'ll notify you when they open!', 'success');
     }
 };

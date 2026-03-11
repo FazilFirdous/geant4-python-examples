@@ -57,7 +57,7 @@ const SettingsTab = {
                     <button class="btn-primary" style="width:100%;padding:14px;" onclick="SettingsTab.saveSettings()">Save Changes</button>
 
                     <div style="margin-top:16px;text-align:center;">
-                        <button onclick="SettingsTab.logout()" style="background:none;border:none;color:var(--danger);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;">🚪 Logout</button>
+                        <button onclick="SettingsTab.logout()" style="background:none;border:none;color:var(--danger);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;">Logout</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@ const SettingsTab = {
                 <div style="padding:12px 0;border-bottom:1px solid var(--berry-border);">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div style="font-weight:700;font-size:14px;">${r.customer_name || 'Customer'}</div>
-                        <div style="background:${r.food_rating >= 4.5 ? 'var(--green)' : 'var(--orange)'};color:white;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700;">⭐ ${r.food_rating}</div>
+                        <div style="background:${r.food_rating >= 4.5 ? 'var(--green)' : 'var(--orange)'};color:white;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;"><svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${r.food_rating}</div>
                     </div>
                     ${r.comment ? `<div style="font-size:13px;color:var(--text-sub);margin-top:4px;">"${r.comment}"</div>` : ''}
                     ${r.restaurant_reply ? `

@@ -86,7 +86,9 @@ const OrdersTab = {
         if (!orders.length) {
             el.innerHTML = `
                 <div class="empty-state">
-                    <div style="font-size:60px;">📋</div>
+                    <div style="width:60px;height:60px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--berry)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/></svg>
+                    </div>
                     <h3 style="font-family:'Playfair Display',serif;font-size:20px;">No orders</h3>
                     <p style="color:var(--text-muted);">New orders will appear here</p>
                 </div>
@@ -144,19 +146,19 @@ const OrdersTab = {
                     `).join('')}
 
                     ${o.special_instructions ? `
-                        <div style="background:var(--berry-light);border-radius:8px;padding:8px;margin-top:8px;font-size:12px;color:var(--berry);">
-                            📝 ${o.special_instructions}
+                        <div style="background:var(--berry-light);border-radius:8px;padding:8px;margin-top:8px;font-size:12px;color:var(--berry);display:flex;align-items:flex-start;gap:6px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg> ${o.special_instructions}
                         </div>
                     ` : ''}
 
                     <div class="order-meta">
-                        ${o.delivery_address ? `<span class="order-meta-item">📍 ${o.delivery_address}</span>` : ''}
-                        ${o.estimated_prep_minutes ? `<span class="order-meta-item">⏱ ${o.estimated_prep_minutes} min</span>` : ''}
+                        ${o.delivery_address ? `<span class="order-meta-item"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ${o.delivery_address}</span>` : ''}
+                        ${o.estimated_prep_minutes ? `<span class="order-meta-item"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${o.estimated_prep_minutes} min</span>` : ''}
                     </div>
                 </div>
                 <div class="order-actions" style="flex-wrap:wrap;gap:8px;">
                     ${actionBtns}
-                    <a href="${waLink}" target="_blank" class="wa-btn" style="font-size:12px;padding:8px 12px;">💬 WhatsApp</a>
+                    <a href="${waLink}" target="_blank" class="wa-btn" style="font-size:12px;padding:8px 12px;">WhatsApp</a>
                 </div>
             </div>
         `;
@@ -166,23 +168,23 @@ const OrdersTab = {
         switch(o.status) {
             case 'placed':
                 return `
-                    <button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'accepted')">✅ Accept</button>
-                    <button class="btn-danger"  style="flex:1;padding:10px;" onclick="OrdersTab.rejectOrder(${o.id})">❌ Reject</button>
+                    <button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'accepted')">Accept</button>
+                    <button class="btn-danger"  style="flex:1;padding:10px;" onclick="OrdersTab.rejectOrder(${o.id})">Reject</button>
                 `;
             case 'accepted':
-                return `<button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'preparing')">🍳 Start Preparing</button>`;
+                return `<button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'preparing')">Start Preparing</button>`;
             case 'preparing':
-                return `<button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'ready')">✨ Mark Ready</button>`;
+                return `<button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'ready')">Mark Ready</button>`;
             case 'ready':
                 if (o.order_type === 'pickup') {
-                    return `<button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'delivered')">✅ Mark Picked Up</button>`;
+                    return `<button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'delivered')">Mark Picked Up</button>`;
                 }
                 return `
-                    <button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.showDeliveryOptions(${o.id})">🛵 Delivery Options</button>
+                    <button class="btn-primary" style="flex:1;padding:10px;" onclick="OrdersTab.showDeliveryOptions(${o.id})">Delivery Options</button>
                 `;
             case 'picked_up':
             case 'on_the_way':
-                return `<button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'delivered')">🎉 Mark Delivered</button>`;
+                return `<button class="btn-success" style="flex:1;padding:10px;" onclick="OrdersTab.updateStatus(${o.id},'delivered')">Mark Delivered</button>`;
             default:
                 return '';
         }
@@ -227,12 +229,12 @@ const OrdersTab = {
         const ownBoysHtml = availBoys.length ? `
             <div style="margin-bottom:12px;">
                 <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
-                    ✅ Your Available Riders
+                    Your Available Riders
                 </div>
                 ${availBoys.map(b => `
                     <button class="btn-success" style="width:100%;margin-bottom:6px;padding:12px;text-align:left;display:flex;align-items:center;gap:10px;"
                         onclick="OrdersTab.assignDeliveryBoy(${orderId},${b.id},'${b.name.replace(/'/g,"\\'")}');document.getElementById('${mid}').remove()">
-                        🛵 ${b.name}
+                        ${b.name}
                     </button>`).join('')}
             </div>
             <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">
@@ -241,19 +243,19 @@ const OrdersTab = {
 
         modal.innerHTML = `
             <div style="background:white;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:24px;padding-bottom:40px;max-height:80vh;overflow-y:auto;">
-                <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;">🛵 Delivery Options</h3>
+                <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;">Delivery Options</h3>
                 ${ownBoysHtml}
                 <button class="btn-primary" style="width:100%;margin-bottom:10px;padding:14px;"
                     onclick="OrdersTab.postToPublicPool(${orderId});document.getElementById('${mid}').remove()">
-                    🌐 Post to Public Pool
+                    Post to Public Pool
                 </button>
                 <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;"
                     onclick="OrdersTab.notifyCustomerPickup(${orderId});document.getElementById('${mid}').remove()">
-                    🏃 Ask Customer to Pickup
+                    Ask Customer to Pickup
                 </button>
                 <button class="btn-secondary" style="width:100%;margin-bottom:10px;padding:14px;"
                     onclick="OrdersTab.notifyDelay(${orderId});document.getElementById('${mid}').remove()">
-                    ⏰ Delay & Notify Customer
+                    Delay & Notify Customer
                 </button>
                 <button onclick="document.getElementById('${mid}').remove()"
                     style="width:100%;background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:10px;">

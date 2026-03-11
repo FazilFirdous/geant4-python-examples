@@ -38,7 +38,7 @@ const HomeScreen = {
                                 <div class="header-subtitle">Kulgam's Food, Delivered</div>
                             </div>
                             <div style="text-align:right;color:white;font-size:13px;">
-                                <div>Hi, ${App.user?.name || 'Guest'} 👋</div>
+                                <div>Hi, ${App.user?.name || 'Guest'}</div>
                             </div>
                         </div>
                         <div class="header-address-bar" onclick="window.location.hash='#profile'">

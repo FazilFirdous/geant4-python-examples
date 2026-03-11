@@ -21,7 +21,7 @@ const DeliveriesTab = {
             document.getElementById('deliveries-content').innerHTML = `
                 <!-- My Delivery Boys -->
                 <div style="padding:0 16px 12px;">
-                    <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:12px;">🛵 My Delivery Boys</h3>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:12px;">My Delivery Boys</h3>
                     ${boys.length ? boys.map(b => this.boyCardHtml(b)).join('') : `
                         <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:14px;">
                             No delivery boys assigned yet. Contact admin to add delivery boys.
@@ -31,7 +31,7 @@ const DeliveriesTab = {
 
                 <!-- Active Deliveries -->
                 <div style="padding:0 16px 12px;">
-                    <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:12px;">📦 Active Deliveries</h3>
+                    <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:12px;">Active Deliveries</h3>
                     <div id="active-deliveries-list">
                         <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:14px;">Loading deliveries...</div>
                     </div>
@@ -40,7 +40,7 @@ const DeliveriesTab = {
                 <!-- Public Pool -->
                 <div style="padding:0 16px 12px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                        <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">🌐 Public Pool</h3>
+                        <h3 style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">Public Pool</h3>
                         <button class="btn-secondary" style="padding:8px 12px;font-size:12px;" onclick="DeliveriesTab.loadData()">↻ Refresh</button>
                     </div>
                     ${pool.length ? pool.map(p => this.poolCardHtml(p, boys)).join('') : `
@@ -81,8 +81,8 @@ const DeliveriesTab = {
                         </div>
                         <span class="status-badge status-${o.status}">${o.status?.replace('_',' ')}</span>
                     </div>
-                    ${o.delivery_address ? `<div style="font-size:12px;color:var(--text-sub);margin-top:6px;">📍 ${o.delivery_address}</div>` : ''}
-                    ${o.delivery_boy_name ? `<div style="font-size:12px;color:var(--text-sub);margin-top:4px;">🛵 ${o.delivery_boy_name}</div>` : ''}
+                    ${o.delivery_address ? `<div style="font-size:12px;color:var(--text-sub);margin-top:6px;">${o.delivery_address}</div>` : ''}
+                    ${o.delivery_boy_name ? `<div style="font-size:12px;color:var(--text-sub);margin-top:4px;">${o.delivery_boy_name}</div>` : ''}
                 </div>
             `).join('');
         } catch(e) {}
@@ -95,7 +95,9 @@ const DeliveriesTab = {
         return `
             <div class="card" style="margin-bottom:10px;padding:14px;">
                 <div style="display:flex;align-items:center;gap:12px;">
-                    <div style="width:46px;height:46px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;">🛵</div>
+                    <div style="width:46px;height:46px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--berry)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+                    </div>
                     <div style="flex:1;">
                         <div style="font-weight:700;font-size:15px;">${b.name}</div>
                         <div style="font-size:12px;color:var(--text-muted);">${b.vehicle_type} · ${b.phone}</div>
@@ -118,13 +120,13 @@ const DeliveriesTab = {
             <div class="card" style="margin-bottom:10px;padding:14px;border-left:4px solid var(--berry);">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
                     <div>
-                        <div style="font-weight:700;">📍 ${p.restaurant_name}</div>
+                        <div style="font-weight:700;">${p.restaurant_name}</div>
                         <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Pay: <strong>₹${p.offered_pay}</strong></div>
                     </div>
                     <span style="background:var(--green-light);color:var(--green);padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;">OPEN</span>
                 </div>
-                <div style="font-size:12px;color:var(--text-sub);margin-bottom:4px;">🏪 Pickup: ${p.pickup_address}</div>
-                <div style="font-size:12px;color:var(--text-sub);margin-bottom:12px;">📍 Deliver: ${p.delivery_address}</div>
+                <div style="font-size:12px;color:var(--text-sub);margin-bottom:4px;">Pickup: ${p.pickup_address}</div>
+                <div style="font-size:12px;color:var(--text-sub);margin-bottom:12px;">Deliver: ${p.delivery_address}</div>
                 ${availBoys.length ? `
                     <div style="display:flex;gap:8px;align-items:center;">
                         <select id="boy-select-${p.id}" style="flex:1;background:white;border:1.5px solid var(--berry-border);border-radius:10px;padding:8px 10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;">

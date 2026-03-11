@@ -17,9 +17,9 @@ const OrdersScreen = {
             if (!orders.length) {
                 document.getElementById('orders-body').innerHTML = `
                     <div class="empty-state" style="margin-top:40px;">
-                        <div class="empty-state-emoji">📦</div>
+                        <div style="width:70px;height:70px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i data-lucide="package" style="width:32px;height:32px;color:var(--berry);"></i></div>
                         <h3>No orders yet</h3>
-                        <p>Your first order is waiting! 🍽️</p>
+                        <p>Your first order is waiting!</p>
                         <button class="btn-primary" onclick="window.location.hash='#home'" style="margin-top:16px;">Browse Restaurants</button>
                     </div>
                 `;
@@ -33,7 +33,7 @@ const OrdersScreen = {
             let html = '';
 
             if (active.length) {
-                html += `<div style="padding:16px 16px 8px;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;">🔴 Active Orders</div>`;
+                html += `<div style="padding:16px 16px 8px;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;background:var(--berry);border-radius:50%;display:inline-block;"></span> Active Orders</div>`;
                 html += active.map(o => OrdersScreen.orderCardHtml(o)).join('');
             }
 
@@ -76,7 +76,7 @@ const OrdersScreen = {
                     <div style="display:flex;gap:8px;">
                         ${o.status === 'delivered' ? `
                             <button class="btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="event.stopPropagation();OrdersScreen.reorder(${o.id})">
-                                🔁 Reorder
+                                <i data-lucide="repeat" style="width:12px;height:12px;"></i> Reorder
                             </button>
                         ` : ''}
                         <span style="font-size:12px;color:var(--text-muted);">${new Date(o.placed_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' })}</span>
@@ -107,7 +107,7 @@ const OrdersScreen = {
             });
             App.saveCart();
             CartBar.update();
-            App.showToast('Items added to cart! 🛒', 'success');
+            App.showToast('Items added to cart!', 'success');
             window.location.hash = '#cart';
         } catch (e) {
             App.showToast('Failed to reorder', 'error');
