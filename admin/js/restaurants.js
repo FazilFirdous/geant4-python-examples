@@ -53,7 +53,7 @@ const AdminRestaurants = {
         const modal = document.getElementById('rest-modal');
         modal.style.display = 'flex';
         modal.innerHTML = `<div class="modal-box">
-            <div class="modal-header"><h3>Add Restaurant</h3><button class="modal-close" onclick="AdminRestaurants.closeModal()">✕</button></div>
+            <div class="modal-header"><h3>Add Restaurant</h3><button class="modal-close" onclick="AdminRestaurants.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button></div>
             <div style="padding:20px;overflow-y:auto;max-height:70vh;">
                 <div class="form-group"><label>Owner Phone (+91)</label><input id="r-phone" type="tel" maxlength="10" placeholder="9876543210"></div>
                 <div class="form-group"><label>Restaurant Name</label><input id="r-name" placeholder="Taste of Kashmir"></div>
@@ -104,7 +104,7 @@ const AdminRestaurants = {
         const modal = document.getElementById('rest-modal');
         modal.style.display = 'flex';
         modal.innerHTML = `<div class="modal-box">
-            <div class="modal-header"><h3>Edit Restaurant</h3><button class="modal-close" onclick="AdminRestaurants.closeModal()">✕</button></div>
+            <div class="modal-header"><h3>Edit Restaurant</h3><button class="modal-close" onclick="AdminRestaurants.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button></div>
             <div style="padding:20px;overflow-y:auto;max-height:70vh;">
                 <div class="form-group"><label>Name</label><input id="e-name" value="${r.name}"></div>
                 <div class="form-group"><label>Description</label><textarea id="e-desc" rows="2">${r.description || ''}</textarea></div>

@@ -60,7 +60,7 @@ const AdminDelivery = {
         const modal = document.getElementById('db-modal');
         modal.style.display = 'flex';
         modal.innerHTML = `<div class="modal-box">
-            <div class="modal-header"><h3>Add Delivery Boy</h3><button class="modal-close" onclick="AdminDelivery.closeModal()">✕</button></div>
+            <div class="modal-header"><h3>Add Delivery Boy</h3><button class="modal-close" onclick="AdminDelivery.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button></div>
             <div style="padding:20px;">
                 <div class="form-group"><label>Full Name</label><input id="db-name" placeholder="Mohammed Amir"></div>
                 <div class="form-group"><label>Phone (+91)</label><input id="db-phone" type="tel" maxlength="10" placeholder="9876543210"></div>

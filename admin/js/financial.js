@@ -134,7 +134,7 @@ const AdminSettlement = {
                     <button class="btn-outline btn-sm" onclick="AdminSettlement.unsettle(${s.restaurant_id})">
                         Unmark Settled
                     </button>`}
-                <button class="btn-outline btn-sm" onclick="Admin.switchTab('financial')">View Details →</button>
+                <button class="btn-outline btn-sm" onclick="Admin.switchTab('financial')">View Details</button>
             </div>
         </div>`).join('');
     },

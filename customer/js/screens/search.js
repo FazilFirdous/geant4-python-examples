@@ -7,13 +7,13 @@ const SearchScreen = {
                 <div style="background:linear-gradient(135deg,var(--berry),var(--berry-deep));padding:50px 16px 16px;">
                     <div style="position:relative;z-index:1;">
                         <div style="display:flex;align-items:center;gap:10px;">
-                            <button class="screen-back-btn" onclick="history.back()">←</button>
+                            <button class="screen-back-btn" onclick="history.back()"><i data-lucide="arrow-left" style="width:20px;height:20px;"></i></button>
                             <div style="flex:1;background:white;border-radius:12px;display:flex;align-items:center;padding:10px 14px;gap:8px;">
                                 <i data-lucide="search" style="width:16px;height:16px;color:var(--text-muted);flex-shrink:0;"></i>
                                 <input type="text" id="search-input" placeholder="Search restaurants or dishes..."
                                        style="border:none;outline:none;font-size:14px;width:100%;font-family:'DM Sans',sans-serif;"
                                        autofocus oninput="SearchScreen.onSearch(this.value)">
-                                <span id="search-clear" onclick="SearchScreen.clear()" style="cursor:pointer;display:none;color:var(--text-muted);">✕</span>
+                                <span id="search-clear" onclick="SearchScreen.clear()" style="cursor:pointer;display:none;color:var(--text-muted);"><i data-lucide="x" style="width:16px;height:16px;"></i></span>
                             </div>
                         </div>
                     </div>

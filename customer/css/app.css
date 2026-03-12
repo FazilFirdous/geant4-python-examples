@@ -1495,3 +1495,59 @@ body {
     animation: float 3s ease-in-out infinite;
 }
 
+/* Smooth screen transitions */
+#app-content > div {
+    animation: screenFadeIn 0.3s ease;
+}
+@keyframes screenFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Menu item image loading */
+.menu-item-img {
+    transition: opacity 0.3s ease;
+}
+.menu-item-img[src=""] {
+    opacity: 0;
+}
+
+/* Smoother card interactions */
+.card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card:active {
+    transform: scale(0.98);
+}
+
+/* Button press animation */
+.btn-primary:active, .btn-secondary:active {
+    transform: scale(0.97);
+}
+
+/* Quantity control animation */
+.qty-control {
+    animation: scaleIn 0.2s ease;
+}
+@keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Smooth scroll for category tabs */
+.menu-category-tabs {
+    scroll-behavior: smooth;
+}
+
+/* Toast notification animation */
+.toast {
+    animation: toastSlide 0.3s ease, toastFade 0.3s ease 2.7s forwards;
+}
+@keyframes toastSlide {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes toastFade {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+

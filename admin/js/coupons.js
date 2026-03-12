@@ -45,7 +45,7 @@ const AdminCoupons = {
         const modal = document.getElementById('coupon-modal');
         modal.style.display = 'flex';
         modal.innerHTML = `<div class="modal-box">
-            <div class="modal-header"><h3>Create Coupon</h3><button class="modal-close" onclick="AdminCoupons.closeModal()">✕</button></div>
+            <div class="modal-header"><h3>Create Coupon</h3><button class="modal-close" onclick="AdminCoupons.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button></div>
             <div style="padding:20px;">
                 <div class="form-group"><label>Coupon Code (UPPERCASE)</label><input id="c-code" placeholder="KULGAM50" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()"></div>
                 <div class="form-group"><label>Discount Type</label>

@@ -44,7 +44,7 @@ const HomeScreen = {
                         <div class="header-address-bar" onclick="window.location.hash='#profile'">
                             <i data-lucide="map-pin" style="width:14px;height:14px;flex-shrink:0;"></i>
                             <span>Kulgam Town</span>
-                            <span style="margin-left:auto;opacity:0.7;">▼</span>
+                            <i data-lucide="chevron-down" style="width:14px;height:14px;margin-left:auto;opacity:0.7;"></i>
                         </div>
                         <div class="header-search" onclick="window.location.hash='#search'">
                             <i data-lucide="search" style="width:16px;height:16px;opacity:0.8;flex-shrink:0;"></i>

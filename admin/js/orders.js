@@ -69,7 +69,7 @@ const AdminOrders = {
         modal.innerHTML = `<div class="modal-box">
             <div class="modal-header">
                 <h3>${o.order_number}</h3>
-                <button class="modal-close" onclick="AdminOrders.closeModal()">✕</button>
+                <button class="modal-close" onclick="AdminOrders.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
             </div>
             <div style="padding:20px;overflow-y:auto;max-height:70vh;">
                 <p><strong>Customer:</strong> ${o.customer_name} · ${o.customer_phone}</p>

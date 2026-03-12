@@ -126,7 +126,7 @@ const EarningsTab = {
 
         el.innerHTML = `
             <div class="card" style="padding:16px;margin-bottom:16px;">
-                <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:4px;">⏰ Peak Hours</div>
+                <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><i data-lucide="clock" style="width:18px;height:18px;color:var(--berry);"></i> Peak Hours</div>
                 <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">When you get the most orders</div>
                 <div class="bar-chart">
                     ${hours.map(h => {

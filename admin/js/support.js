@@ -66,7 +66,7 @@ const AdminSupport = {
         const modal = document.getElementById('ticket-modal');
         modal.style.display = 'flex';
         modal.innerHTML = `<div class="modal-box">
-            <div class="modal-header"><h3>Reply to Ticket #${id}</h3><button class="modal-close" onclick="AdminSupport.closeModal()">✕</button></div>
+            <div class="modal-header"><h3>Reply to Ticket #${id}</h3><button class="modal-close" onclick="AdminSupport.closeModal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button></div>
             <div style="padding:20px;">
                 <div style="background:#f9f9f9;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;">
                     <strong>${t.subject}</strong><br><span style="color:#666;">${t.message}</span>

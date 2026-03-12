@@ -52,7 +52,7 @@ const Dashboard = {
                 const toggleIcon = document.getElementById('open-toggle-icon');
                 const toggleText = document.getElementById('open-toggle-text');
                 if (nameEl) nameEl.textContent = r.name;
-                if (statusEl) statusEl.textContent = `⭐ ${r.rating} · ${r.total_orders || 0} orders`;
+                if (statusEl) statusEl.textContent = `${r.rating} · ${r.total_orders || 0} orders`;
                 if (toggleIcon) toggleIcon.style.background = r.is_open == 1 ? '#1DB954' : '#E53935';
                 if (toggleText) toggleText.textContent = r.is_open == 1 ? 'Open' : 'Closed';
             }

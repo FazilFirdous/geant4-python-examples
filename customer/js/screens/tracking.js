@@ -249,27 +249,61 @@ const TrackingScreen = {
         const mapEl = document.getElementById('rider-map');
         if (!mapEl || typeof L === 'undefined') return;
 
-        // Kulgam coordinates
-        const center = [33.645, 75.02];
-        const map = L.map('rider-map', { zoomControl: false, attributionControl: false }).setView(center, 14);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        // Kulgam coordinates (restaurant)
+        const restPos = [33.645, 75.02];
+        // Simulated delivery destination (customer)
+        const custPos = [restPos[0] + 0.005 + Math.random() * 0.005, restPos[1] + 0.005 + Math.random() * 0.005];
+        // Simulated rider position (between restaurant and customer)
+        const progress = 0.3 + Math.random() * 0.4;
+        const riderPos = [
+            restPos[0] + (custPos[0] - restPos[0]) * progress,
+            restPos[1] + (custPos[1] - restPos[1]) * progress
+        ];
+
+        const map = L.map('rider-map', { zoomControl: false, attributionControl: false }).setView(riderPos, 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { opacity: 0.9 }).addTo(map);
+
+        // Route polyline (restaurant -> rider -> customer)
+        const routePoints = [restPos, riderPos, custPos];
+        L.polyline(routePoints, { color: '#D1386C', weight: 3, opacity: 0.5, dashArray: '8, 8' }).addTo(map);
+        // Completed route (restaurant -> rider)
+        L.polyline([restPos, riderPos], { color: '#D1386C', weight: 4, opacity: 0.9 }).addTo(map);
 
         // Restaurant marker
-        const restIcon = L.divIcon({ html: '<div style="background:var(--berry);width:12px;height:12px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>', className: '', iconSize: [16,16], iconAnchor: [8,8] });
-        L.marker(center, { icon: restIcon }).addTo(map);
-
-        // Simulated rider position
-        const riderPos = [center[0] + (Math.random()-0.5)*0.01, center[1] + (Math.random()-0.5)*0.01];
-        const riderIcon = L.divIcon({
-            html: `<div style="background:var(--berry);padding:6px;border-radius:50%;box-shadow:0 2px 10px rgba(209,56,108,0.5);animation:statusPulse 2s ease infinite;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
-            </div>`,
-            className: '', iconSize: [32,32], iconAnchor: [16,16]
+        const restIcon = L.divIcon({
+            html: '<div style="background:white;width:28px;height:28px;border-radius:50%;border:3px solid #D1386C;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D1386C" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>',
+            className: '', iconSize: [28, 28], iconAnchor: [14, 14]
         });
-        L.marker(riderPos, { icon: riderIcon }).addTo(map);
+        L.marker(restPos, { icon: restIcon }).addTo(map).bindPopup('Restaurant');
 
-        map.fitBounds([center, riderPos], { padding: [40, 40] });
+        // Customer destination marker
+        const custIcon = L.divIcon({
+            html: '<div style="background:white;width:28px;height:28px;border-radius:50%;border:3px solid #1DB954;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/></svg></div>',
+            className: '', iconSize: [28, 28], iconAnchor: [14, 14]
+        });
+        L.marker(custPos, { icon: custIcon }).addTo(map).bindPopup('Your Location');
+
+        // Rider marker (animated)
+        const riderIcon = L.divIcon({
+            html: `<div style="background:linear-gradient(135deg,#D1386C,#8C1D47);padding:8px;border-radius:50%;box-shadow:0 2px 12px rgba(209,56,108,0.5);animation:statusPulse 2s ease infinite;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+            </div>`,
+            className: '', iconSize: [36, 36], iconAnchor: [18, 18]
+        });
+        const riderMarker = L.marker(riderPos, { icon: riderIcon }).addTo(map);
+
+        map.fitBounds([restPos, custPos], { padding: [50, 50] });
+
+        // Simulate rider movement towards customer
+        this._riderInterval = setInterval(() => {
+            const cur = riderMarker.getLatLng();
+            const newLat = cur.lat + (custPos[0] - cur.lat) * 0.05;
+            const newLng = cur.lng + (custPos[1] - cur.lng) * 0.05;
+            riderMarker.setLatLng([newLat, newLng]);
+        }, 3000);
     },
+
+    _riderInterval: null,
 
     selectedRating: 0,
 
