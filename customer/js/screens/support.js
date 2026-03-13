@@ -93,7 +93,7 @@ const SupportScreen = {
         this.addBotMessage('Please provide your order number, or I can show your latest order.');
         this.addActions([
             { id: 'show_latest', label: 'Show latest order' },
-            { id: 'back_menu',   label: '← Back' }
+            { id: 'back_menu',   label: 'Back' }
         ]);
     },
 
@@ -101,7 +101,7 @@ const SupportScreen = {
         this.addBotMessage('Sorry about that! For wrong or missing items, we\'ll process a refund for the affected items within 3-5 business days.');
         this.addActions([
             { id: 'talk_to_human', label: 'Contact support for refund' },
-            { id: 'back_menu',     label: '← Back' }
+            { id: 'back_menu',     label: 'Back' }
         ]);
     },
 
@@ -109,7 +109,7 @@ const SupportScreen = {
         this.addBotMessage('Refund requests are processed within 3-5 business days. Here\'s our refund policy:\n\n• Wrong item: Full refund/replacement\n• Missing items: Refund for missing items\n• Quality issue: Review with photo\n• Cancelled before accepted: Full refund');
         this.addActions([
             { id: 'talk_to_human', label: 'Raise a refund request' },
-            { id: 'back_menu',     label: '← Back' }
+            { id: 'back_menu',     label: 'Back' }
         ]);
     },
 
@@ -117,7 +117,7 @@ const SupportScreen = {
         this.addBotMessage('Orders can be cancelled before the restaurant accepts them. After acceptance, cancellation may not be possible.\n\nWould you like to proceed?');
         this.addActions([
             { id: 'talk_to_human', label: 'Cancel my order' },
-            { id: 'back_menu',     label: '← Back' }
+            { id: 'back_menu',     label: 'Back' }
         ]);
     },
 
@@ -125,7 +125,7 @@ const SupportScreen = {
         this.addBotMessage('We\'re sorry about the quality issue. Please take a photo of the food and contact our support team. We\'ll resolve this as quickly as possible.');
         this.addActions([
             { id: 'talk_to_human', label: 'Report quality issue' },
-            { id: 'back_menu',     label: '← Back' }
+            { id: 'back_menu',     label: 'Back' }
         ]);
     },
 
@@ -133,7 +133,7 @@ const SupportScreen = {
         this.addBotMessage('We apologize for the delay! Delivery times can be affected by traffic and distance. If your order is 30+ minutes late, you\'re eligible for ₹50 credit.');
         this.addActions([
             { id: 'talk_to_human', label: 'Get ₹50 credit for delay' },
-            { id: 'back_menu',     label: '← Back' }
+            { id: 'back_menu',     label: 'Back' }
         ]);
     },
 

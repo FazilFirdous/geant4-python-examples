@@ -231,14 +231,15 @@ const CartScreen = {
             return;
         }
         const iconMap = { Home: 'home', Work: 'briefcase' };
+        const esc = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         el.innerHTML = this.addresses.map(a => `
-            <div class="address-card ${a.id === this.selectedAddressId ? 'selected' : ''}" onclick="CartScreen.selectAddress(${a.id})">
+            <div class="address-card ${a.id === this.selectedAddressId ? 'selected' : ''}" data-addr-id="${a.id}" onclick="CartScreen.selectAddress(${a.id})">
                 <div style="width:36px;height:36px;background:var(--berry-light);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <i data-lucide="${iconMap[a.label] || 'map-pin'}" style="width:18px;height:18px;color:var(--berry);"></i>
                 </div>
                 <div class="address-details">
-                    <div class="address-label">${a.label}</div>
-                    <div class="address-text">${a.full_address}${a.landmark ? ', ' + a.landmark : ''}</div>
+                    <div class="address-label">${esc(a.label)}</div>
+                    <div class="address-text">${esc(a.full_address)}${a.landmark ? ', ' + esc(a.landmark) : ''}</div>
                 </div>
             </div>
         `).join('');
@@ -252,7 +253,7 @@ const CartScreen = {
         this.selectedAddressId = id;
         if (rerender) {
             document.querySelectorAll('.address-card').forEach(el => el.classList.remove('selected'));
-            document.querySelector(`.address-card[onclick*="${id}"]`)?.classList.add('selected');
+            document.querySelector(`.address-card[data-addr-id="${id}"]`)?.classList.add('selected');
         }
     },
 
@@ -360,13 +361,15 @@ const CartScreen = {
             if (res.success) {
                 this.couponCode     = code;
                 this.couponDiscount = res.data.discount;
-                statusEl.innerHTML  = `<span style="color:var(--green);">✓ ${res.message}</span>`;
+                statusEl.style.color = 'var(--green)';
+                statusEl.textContent = '✓ ' + res.message;
                 this.renderPriceBreakdown();
             } else {
                 throw new Error(res.message);
             }
         } catch (e) {
-            statusEl.innerHTML = `<span style="color:var(--danger);">✗ ${e.message}</span>`;
+            statusEl.style.color = 'var(--danger)';
+            statusEl.textContent = '✗ ' + e.message;
             this.couponCode = '';
             this.couponDiscount = 0;
         }
@@ -430,10 +433,26 @@ const CartScreen = {
             const total = App.getCartTotal() + (this.orderType === 'delivery' ? 25 : 0) + 5 - this.couponDiscount;
             const restName = App.cart[0]?.restaurantName || 'CORA';
 
+            // Cleanup function to safely resolve once
+            let resolved = false;
+            const safeResolve = (val) => {
+                if (resolved) return;
+                resolved = true;
+                const modal = document.getElementById('upi-modal');
+                if (modal) modal.remove();
+                resolve(val);
+            };
+
             // Show UPI payment modal
             const modal = document.createElement('div');
             modal.id = 'upi-modal';
             modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.3s ease;';
+
+            // Close on backdrop click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) safeResolve(false);
+            });
+
             modal.innerHTML = `
                 <div style="background:white;width:90%;max-width:380px;border-radius:24px;padding:28px;text-align:center;animation:slideUp 0.4s ease;">
                     <div style="width:64px;height:64px;background:var(--berry-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
@@ -462,17 +481,30 @@ const CartScreen = {
                         </div>
                     </div>
 
-                    <button class="btn-primary" style="width:100%;padding:14px;margin-bottom:10px;" id="upi-confirm-btn" onclick="document.getElementById('upi-modal').remove();CartScreen._upiResolve(true);">
+                    <button class="btn-primary" style="width:100%;padding:14px;margin-bottom:10px;" id="upi-confirm-btn">
                         I've Completed Payment
                     </button>
-                    <button class="btn-secondary" style="width:100%;padding:12px;" onclick="document.getElementById('upi-modal').remove();CartScreen._upiResolve(false);">
+                    <button class="btn-secondary" style="width:100%;padding:12px;" id="upi-cancel-btn">
                         Cancel
                     </button>
                 </div>
             `;
             document.body.appendChild(modal);
+
+            // Attach event listeners properly (no inline onclick for resolve)
+            modal.querySelector('#upi-confirm-btn').addEventListener('click', () => safeResolve(true));
+            modal.querySelector('#upi-cancel-btn').addEventListener('click', () => safeResolve(false));
+
             if (typeof lucide !== 'undefined') lucide.createIcons();
-            CartScreen._upiResolve = resolve;
+            CartScreen._upiResolve = safeResolve;
+
+            // Safety timeout — auto-cancel after 5 minutes
+            setTimeout(() => {
+                if (!resolved) {
+                    safeResolve(false);
+                    App.showToast('Payment timed out. Please try again.', 'error');
+                }
+            }, 300000);
         });
     },
 
@@ -485,74 +517,113 @@ const CartScreen = {
     },
 
     showOrderSuccess(order) {
-        // Generate confetti particles
-        const confettiColors = ['#D1386C', '#8C1D47', '#FFB800', '#1DB954', '#FF6B35', '#4A00E0'];
+        // Generate premium confetti — mix of circles, stars, and berry shapes
+        const confettiColors = ['#D1386C', '#8C1D47', '#FFB800', '#1DB954', '#FF6B35', '#E040FB', '#FF80AB', '#4A00E0'];
         let confettiHtml = '';
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 60; i++) {
             const color = confettiColors[i % confettiColors.length];
             const left = Math.random() * 100;
-            const delay = Math.random() * 0.8;
-            const size = 4 + Math.random() * 6;
-            const dur = 1.5 + Math.random() * 1.5;
-            confettiHtml += `<div style="position:absolute;width:${size}px;height:${size}px;background:${color};border-radius:${Math.random()>0.5?'50%':'2px'};left:${left}%;top:-10px;animation:confettiFall ${dur}s ease ${delay}s forwards;opacity:0;"></div>`;
+            const delay = Math.random() * 1.2;
+            const size = 4 + Math.random() * 8;
+            const dur = 2 + Math.random() * 2;
+            const drift = -40 + Math.random() * 80;
+            const shape = Math.random();
+            const borderR = shape > 0.7 ? '50%' : shape > 0.4 ? '2px' : '50% 0 50% 50%';
+            confettiHtml += `<div style="position:absolute;width:${size}px;height:${size}px;background:${color};border-radius:${borderR};left:${left}%;top:-10px;animation:confettiFall ${dur}s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s forwards;--drift:${drift}px;opacity:0;"></div>`;
         }
 
+        // Starburst rays
+        let starburst = '';
+        for (let i = 0; i < 12; i++) {
+            const angle = i * 30;
+            starburst += `<div style="position:absolute;top:50%;left:50%;width:2px;height:40px;background:linear-gradient(to bottom, var(--berry), transparent);transform-origin:center 0;transform:rotate(${angle}deg) translateY(-50px);opacity:0;animation:rayBurst 0.6s ease ${0.8 + i * 0.03}s forwards;"></div>`;
+        }
+
+        // Floating berry particles
+        let floatingParticles = '';
+        for (let i = 0; i < 8; i++) {
+            const x = 20 + Math.random() * 60;
+            const y = 10 + Math.random() * 80;
+            const s = 6 + Math.random() * 10;
+            const d = 3 + Math.random() * 4;
+            floatingParticles += `<div style="position:absolute;left:${x}%;top:${y}%;width:${s}px;height:${s}px;background:var(--berry);opacity:0.08;border-radius:50%;animation:floatParticle ${d}s ease-in-out infinite alternate;animation-delay:${i * 0.5}s;"></div>`;
+        }
+
+        const eta = 30 + Math.floor(Math.random() * 15);
+
         App.setScreen(`
-            <div style="position:relative;overflow:hidden;min-height:100vh;background:var(--berry-light);">
-                <!-- Confetti -->
+            <div style="position:relative;overflow:hidden;min-height:100vh;background:linear-gradient(180deg, #FFF0F5 0%, #FFEDF5 40%, #FFF5F8 100%);">
+                <!-- Floating berry particles bg -->
+                <div style="position:absolute;inset:0;pointer-events:none;z-index:1;">${floatingParticles}</div>
+
+                <!-- Confetti burst -->
                 <div id="confetti-container" style="position:absolute;inset:0;pointer-events:none;z-index:10;">${confettiHtml}</div>
 
-                <!-- Glowing success circle -->
-                <div style="text-align:center;padding:50px 24px 30px;position:relative;z-index:5;">
-                    <div class="success-glow-ring">
-                        <svg width="120" height="120" viewBox="0 0 120 120">
-                            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--berry)" stroke-width="3" opacity="0.15"/>
-                            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--berry)" stroke-width="3" stroke-dasharray="327" stroke-dashoffset="327" class="success-circle-draw"/>
-                            <circle cx="60" cy="60" r="38" fill="var(--berry)" opacity="0" class="success-fill"/>
-                            <path d="M40 62 L53 75 L80 46" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="65" stroke-dashoffset="65" class="success-check-draw"/>
+                <!-- Success hero section -->
+                <div style="text-align:center;padding:48px 24px 24px;position:relative;z-index:5;">
+                    <!-- Glow backdrop -->
+                    <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle, rgba(209,56,108,0.15) 0%, transparent 70%);border-radius:50%;animation:glowPulse 3s ease-in-out infinite;"></div>
+
+                    <div class="success-glow-ring" style="position:relative;display:inline-block;">
+                        ${starburst}
+                        <svg width="130" height="130" viewBox="0 0 130 130" style="filter:drop-shadow(0 0 20px rgba(209,56,108,0.3));">
+                            <defs>
+                                <linearGradient id="berryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#D1386C"/>
+                                    <stop offset="100%" style="stop-color:#8C1D47"/>
+                                </linearGradient>
+                            </defs>
+                            <circle cx="65" cy="65" r="56" fill="none" stroke="url(#berryGrad)" stroke-width="3" opacity="0.2"/>
+                            <circle cx="65" cy="65" r="56" fill="none" stroke="url(#berryGrad)" stroke-width="3.5" stroke-dasharray="352" stroke-dashoffset="352" class="success-circle-draw" stroke-linecap="round"/>
+                            <circle cx="65" cy="65" r="42" fill="url(#berryGrad)" opacity="0" class="success-fill"/>
+                            <path d="M43 67 L57 81 L87 49" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="70" stroke-dashoffset="70" class="success-check-draw"/>
                         </svg>
                         <div class="success-pulse-ring"></div>
-                        <div class="success-pulse-ring" style="animation-delay:0.3s;"></div>
+                        <div class="success-pulse-ring" style="animation-delay:0.4s;"></div>
+                        <div class="success-pulse-ring" style="animation-delay:0.8s;"></div>
                     </div>
 
-                    <h2 style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-top:24px;color:var(--text);">Order Confirmed!</h2>
-                    <p style="color:var(--text-sub);margin-top:8px;font-size:15px;">Your food is being prepared with love</p>
+                    <h2 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-top:20px;color:var(--text);animation:slideUp 0.6s ease 1s both;">Order Confirmed!</h2>
+                    <p style="color:var(--text-sub);margin-top:8px;font-size:15px;animation:slideUp 0.6s ease 1.1s both;">Your food is being prepared with love</p>
                 </div>
 
-                <!-- Order card -->
-                <div style="padding:0 20px;position:relative;z-index:5;">
-                    <div class="card" style="padding:24px;border:2px solid var(--berry-border);position:relative;overflow:hidden;">
-                        <div style="position:absolute;top:0;right:0;width:100px;height:100px;background:var(--berry);opacity:0.04;border-radius:0 0 0 100%;"></div>
-                        <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Order Number</div>
-                        <div style="font-size:22px;font-weight:700;color:var(--berry);font-family:'Playfair Display',serif;margin-top:4px;">${order.order_number}</div>
+                <!-- Order details card -->
+                <div style="padding:0 20px;position:relative;z-index:5;animation:slideUp 0.6s ease 1.2s both;">
+                    <div style="background:white;border-radius:20px;padding:24px;border:1.5px solid rgba(209,56,108,0.12);box-shadow:0 8px 32px rgba(209,56,108,0.08);position:relative;overflow:hidden;">
+                        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle, rgba(209,56,108,0.06) 0%, transparent 70%);border-radius:50%;"></div>
+                        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;">Order Number</div>
+                        <div style="font-size:24px;font-weight:700;color:var(--berry);font-family:'Playfair Display',serif;margin-top:4px;">${order.order_number}</div>
 
-                        <div style="display:flex;gap:20px;margin-top:16px;">
+                        <div style="display:flex;gap:24px;margin-top:18px;">
                             <div>
-                                <div style="font-size:12px;color:var(--text-muted);">Total</div>
-                                <div style="font-size:20px;font-weight:700;margin-top:2px;">₹${parseFloat(order.total_amount).toFixed(0)}</div>
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Total</div>
+                                <div style="font-size:22px;font-weight:700;margin-top:4px;">₹${parseFloat(order.total_amount).toFixed(0)}</div>
                             </div>
                             <div>
-                                <div style="font-size:12px;color:var(--text-muted);">Payment</div>
-                                <div style="font-size:14px;font-weight:600;text-transform:uppercase;margin-top:4px;padding:3px 10px;background:${order.payment_method === 'upi' ? 'var(--berry-light)' : 'var(--green-light)'};color:${order.payment_method === 'upi' ? 'var(--berry)' : 'var(--green)'};border-radius:8px;display:inline-block;">${order.payment_method}</div>
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Payment</div>
+                                <div style="font-size:13px;font-weight:600;text-transform:uppercase;margin-top:6px;padding:4px 12px;background:${order.payment_method === 'upi' ? 'linear-gradient(135deg, #FFF0F5, #FFE0EC)' : 'linear-gradient(135deg, #E8F5E9, #C8E6C9)'};color:${order.payment_method === 'upi' ? 'var(--berry)' : '#2E7D32'};border-radius:10px;display:inline-block;">${order.payment_method}</div>
                             </div>
                         </div>
 
-                        <div style="margin-top:16px;padding-top:16px;border-top:1px dashed var(--berry-border);font-size:13px;color:var(--text-sub);">
-                            <i data-lucide="clock" style="width:14px;height:14px;display:inline;vertical-align:middle;margin-right:4px;"></i>
-                            Estimated delivery in ~${30 + Math.floor(Math.random() * 15)} mins
+                        <div style="margin-top:18px;padding-top:16px;border-top:1px dashed rgba(209,56,108,0.15);display:flex;align-items:center;gap:8px;">
+                            <div style="width:32px;height:32px;background:var(--berry-light);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                                <i data-lucide="clock" style="width:16px;height:16px;color:var(--berry);"></i>
+                            </div>
+                            <span style="font-size:14px;color:var(--text-sub);">Estimated delivery in <strong style="color:var(--text);">~${eta} mins</strong></span>
                         </div>
                     </div>
 
-                    <button class="btn-primary" style="width:100%;margin-top:16px;padding:16px;font-size:16px;position:relative;overflow:hidden;" onclick="window.location.hash='#order/${order.id}'">
-                        <span style="position:relative;z-index:1;">Track My Order</span>
-                        <i data-lucide="map-pin" style="width:18px;height:18px;position:relative;z-index:1;"></i>
+                    <button class="btn-primary" style="width:100%;margin-top:16px;padding:16px;font-size:16px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="window.location.hash='#order/${order.id}'">
+                        <i data-lucide="map-pin" style="width:18px;height:18px;"></i>
+                        <span>Track My Order</span>
                     </button>
                     <button class="btn-secondary" style="width:100%;margin-top:10px;padding:14px;" onclick="window.location.hash='#home'">
                         Back to Home
                     </button>
                     ${CartScreen._waConfirmLink ? `
                     <a href="${CartScreen._waConfirmLink}" target="_blank" rel="noopener"
-                       style="display:block;width:100%;margin-top:10px;padding:14px;background:#25D366;color:white;border-radius:14px;font-weight:600;font-size:14px;text-align:center;text-decoration:none;box-sizing:border-box;">
+                       style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:14px;background:#25D366;color:white;border-radius:14px;font-weight:600;font-size:14px;text-align:center;text-decoration:none;box-sizing:border-box;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.348 0-4.518-.816-6.222-2.18l-.435-.354-2.638.884.884-2.638-.354-.435A9.956 9.956 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
                         Share on WhatsApp
                     </a>` : ''}
                     <div style="height:40px;"></div>
@@ -560,27 +631,41 @@ const CartScreen = {
             </div>
             <style>
                 .success-glow-ring { position:relative; display:inline-block; }
-                .success-circle-draw { animation: drawCircleAnim 0.8s ease 0.2s forwards; }
-                .success-fill { animation: fillCircle 0.4s ease 0.7s forwards; }
-                .success-check-draw { animation: drawCheckAnim 0.5s ease 0.9s forwards; }
+                .success-circle-draw { animation: drawCircleAnim 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards; }
+                .success-fill { animation: fillCircle 0.5s ease 1s forwards; }
+                .success-check-draw { animation: drawCheckAnim 0.4s ease 1.2s forwards; }
                 .success-pulse-ring {
-                    position:absolute; inset:-20px; border:2px solid var(--berry);
+                    position:absolute; inset:-24px; border:2px solid var(--berry);
                     border-radius:50%; opacity:0;
-                    animation: pulseRing 2s ease-out 1.2s infinite;
+                    animation: pulseRing 2.5s ease-out 1.5s infinite;
                 }
                 @keyframes drawCircleAnim { to { stroke-dashoffset:0; } }
                 @keyframes fillCircle { to { opacity:1; } }
                 @keyframes drawCheckAnim { to { stroke-dashoffset:0; } }
                 @keyframes pulseRing {
-                    0% { transform:scale(0.8); opacity:0.6; }
-                    100% { transform:scale(1.6); opacity:0; }
+                    0% { transform:scale(0.8); opacity:0.5; }
+                    100% { transform:scale(1.8); opacity:0; }
                 }
                 @keyframes confettiFall {
-                    0% { transform:translateY(0) rotate(0deg); opacity:1; }
-                    100% { transform:translateY(${window.innerHeight || 800}px) rotate(${360 + Math.random()*360}deg); opacity:0; }
+                    0% { transform:translateY(0) translateX(0) rotate(0deg) scale(0); opacity:0; }
+                    10% { opacity:1; transform:translateY(0) translateX(0) rotate(0deg) scale(1); }
+                    100% { transform:translateY(${window.innerHeight || 800}px) translateX(var(--drift)) rotate(${540 + Math.random()*360}deg) scale(0.3); opacity:0; }
+                }
+                @keyframes rayBurst {
+                    0% { opacity:0; height:0; }
+                    50% { opacity:0.8; height:40px; }
+                    100% { opacity:0; height:60px; }
+                }
+                @keyframes glowPulse {
+                    0%, 100% { transform:translateX(-50%) scale(1); opacity:0.6; }
+                    50% { transform:translateX(-50%) scale(1.2); opacity:1; }
+                }
+                @keyframes floatParticle {
+                    0% { transform:translateY(0) scale(1); }
+                    100% { transform:translateY(-20px) scale(1.3); }
                 }
                 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-                @keyframes slideUp { from { transform:translateY(40px);opacity:0; } to { transform:translateY(0);opacity:1; } }
+                @keyframes slideUp { from { transform:translateY(30px);opacity:0; } to { transform:translateY(0);opacity:1; } }
             </style>
         `);
         if (typeof lucide !== 'undefined') lucide.createIcons();
